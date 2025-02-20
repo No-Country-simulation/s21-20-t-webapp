@@ -1,7 +1,10 @@
 package com.inventario.demo.user.model;
 
+import com.inventario.demo.tenant.model.TenantModel;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -19,9 +22,10 @@ public class UserModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private String name;
@@ -37,13 +41,19 @@ public class UserModel {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @Column(name = "register_date")
-    private LocalDate registerDate = LocalDate.now();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private TenantModel tenant;
 
+    @CreationTimestamp
+    @Column(name = "register_date", updatable = false)
+    private LocalDate registerDate;
+
+    @UpdateTimestamp
     @Column(name = "last_login")
-    private LocalDate lastLogin = LocalDate.now();
+    private LocalDate lastLogin;
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = RoleModel.class)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

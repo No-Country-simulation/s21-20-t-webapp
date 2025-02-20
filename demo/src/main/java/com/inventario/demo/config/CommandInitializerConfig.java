@@ -1,5 +1,7 @@
 package com.inventario.demo.config;
 
+import com.inventario.demo.tenant.model.TenantModel;
+import com.inventario.demo.tenant.repository.TenantRepository;
 import com.inventario.demo.user.Enum.EnumPermission;
 import com.inventario.demo.user.Enum.EnumRole;
 import com.inventario.demo.user.model.PermissionModel;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +27,7 @@ public class CommandInitializerConfig  implements CommandLineRunner {
     private final PermissionRepository permissionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TenantRepository tenantRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -51,6 +55,18 @@ public class CommandInitializerConfig  implements CommandLineRunner {
             System.out.println("Roles initialized.");
         }
 
+        TenantModel defaultTenant;
+        if (tenantRepository.count() == 0) {
+            defaultTenant = new TenantModel();
+            defaultTenant.setName("Default Tenant");
+            defaultTenant.setConfiguration(new HashMap<>()); // o configuración por defecto que requieras
+            defaultTenant = tenantRepository.save(defaultTenant);
+            System.out.println("Default tenant created.");
+        } else {
+            // Recuperamos el primer tenant (o el que convenga según tu lógica)
+            defaultTenant = tenantRepository.findAll().get(0);
+        }
+
         // Crear usuarios iniciales
         if (userRepository.count() == 0) {
             RoleModel adminRole = roleRepository.findByEnumRole(EnumRole.ADMIN)
@@ -69,6 +85,7 @@ public class CommandInitializerConfig  implements CommandLineRunner {
                     .registerDate(LocalDate.now())
                     .lastLogin(LocalDate.now())
                     .roles(Set.of(adminRole))
+                    .tenant(defaultTenant)
                     .build();
 
             UserModel user1 = UserModel.builder()
@@ -82,6 +99,7 @@ public class CommandInitializerConfig  implements CommandLineRunner {
                     .registerDate(LocalDate.now())
                     .lastLogin(LocalDate.now())
                     .roles(Set.of(userRole))
+                    .tenant(defaultTenant)
                     .build();
 
             UserModel user2 = UserModel.builder()
@@ -95,7 +113,10 @@ public class CommandInitializerConfig  implements CommandLineRunner {
                     .registerDate(LocalDate.now())
                     .lastLogin(LocalDate.now())
                     .roles(Set.of(userRole))
+                    .tenant(defaultTenant)
                     .build();
+
+
 
             userRepository.save(admin);
             userRepository.save(user1);

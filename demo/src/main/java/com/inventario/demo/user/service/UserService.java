@@ -12,12 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -44,18 +46,14 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public UserModel updateUser(Long id, UserRequestDto updatedUserDto) {
-        UserModel updatedUser = userMapper.toEntity(updatedUserDto);
-        return userRepository.findById(id)
-                .map(user -> {
-                    user.setName(updatedUser.getName());
-                    user.setLastName(updatedUser.getLastName());
-                    user.setEmail(updatedUser.getEmail());
-                    user.setPhoneNumber(updatedUser.getPhoneNumber());
-                    user.setBirthDate(updatedUser.getBirthDate());
-                    return userRepository.save(user);
-                })
+    public UserResponseDto updateUser(Long id, UserRequestDto updatedUserDto) {
+        UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario con ID " + id + " no encontrado."));
+
+        // Actualizamos la entidad usando el mapper dedicado
+        userMapper.updateEntityFromDto(updatedUserDto, user);
+        UserModel updatedUser = userRepository.save(user);
+        return userMapper.toDto(updatedUser);
     }
 
     public void deleteUser(Long id) {

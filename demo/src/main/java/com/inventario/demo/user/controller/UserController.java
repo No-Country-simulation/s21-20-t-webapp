@@ -51,8 +51,8 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     @PatchMapping("/{id}")
-    public ResponseEntity<UserModel> updateUser(@PathVariable Long id, @RequestBody @Valid UserRequestDto updatedUserDto) {
-        UserModel updatedUser = userService.updateUser(id, updatedUserDto);
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserRequestDto updatedUserDto) {
+        UserResponseDto updatedUser = userService.updateUser(id, updatedUserDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
 

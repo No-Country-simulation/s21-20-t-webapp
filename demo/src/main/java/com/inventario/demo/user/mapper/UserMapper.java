@@ -22,4 +22,8 @@ public class UserMapper {
         return modelMapper.map(user, UserResponseDto.class);
     }
 
+    public void updateEntityFromDto(UserRequestDto dto, UserModel entity) {
+        modelMapper.map(dto, entity);
+    }
+
 }
