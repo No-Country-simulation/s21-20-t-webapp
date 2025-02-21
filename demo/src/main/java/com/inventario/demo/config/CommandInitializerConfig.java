@@ -1,13 +1,13 @@
 package com.inventario.demo.config;
 
-import com.inventario.demo.user.Enum.EnumPermission;
-import com.inventario.demo.user.Enum.EnumRole;
-import com.inventario.demo.user.model.PermissionModel;
-import com.inventario.demo.user.model.RoleModel;
-import com.inventario.demo.user.model.UserModel;
-import com.inventario.demo.user.repository.PermissionRepository;
-import com.inventario.demo.user.repository.RoleRepository;
-import com.inventario.demo.user.repository.UserRepository;
+import com.inventario.demo.entities.user.Enum.EnumPermission;
+import com.inventario.demo.entities.user.Enum.EnumRole;
+import com.inventario.demo.entities.user.model.PermissionModel;
+import com.inventario.demo.entities.user.model.RoleModel;
+import com.inventario.demo.entities.user.model.UserModel;
+import com.inventario.demo.entities.user.repository.PermissionRepository;
+import com.inventario.demo.entities.user.repository.RoleRepository;
+import com.inventario.demo.entities.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
