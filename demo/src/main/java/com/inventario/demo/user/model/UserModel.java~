@@ -41,7 +41,7 @@ public class UserModel {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    @ManyToOne(targetEntity = TenantModel.class, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
     private TenantModel tenant;
 

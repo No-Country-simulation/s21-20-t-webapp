@@ -7,12 +7,14 @@ import com.inventario.demo.user.dtoResponse.UserResponseDto;
 import com.inventario.demo.user.mapper.UserMapper;
 import com.inventario.demo.user.model.UserModel;
 import com.inventario.demo.user.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Validated
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -46,7 +49,7 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public UserResponseDto updateUser(Long id, UserRequestDto updatedUserDto) {
+    public UserResponseDto updateUser(Long id, @Valid UserRequestDto updatedUserDto) {
         UserModel user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario con ID " + id + " no encontrado."));
 
