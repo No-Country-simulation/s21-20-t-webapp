@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
 @JsonPropertyOrder({"Nombre","Categoria","SKU"})
-public record ResponseCreateProductDto(
+public record ResponseProductRequest(
         String Nombre,
         String Categoria,
         String SKU
