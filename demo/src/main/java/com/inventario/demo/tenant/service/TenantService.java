@@ -1,8 +1,8 @@
 package com.inventario.demo.tenant.service;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.ResourceNotFoundException;
 import com.inventario.demo.tenant.dtoRequest.TenantRequestDto;
-import com.inventario.demo.tenant.dtoResponse.TenantPageResponse;
 import com.inventario.demo.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.tenant.mapper.TenantMapper;
 import com.inventario.demo.tenant.model.TenantModel;
@@ -28,7 +28,7 @@ public class TenantService {
         this.tenantMapper = tenantMapper;
     }
 
-    public TenantPageResponse getAllTenants(int page, int size) {
+    public PaginatedResponse<TenantResponseDto> getAllTenants(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<TenantModel> tenantsPage = tenantRepository.findAll(pageable);
 
@@ -36,7 +36,7 @@ public class TenantService {
                 .map(tenantMapper::toDto)
                 .collect(Collectors.toList());
 
-        return new TenantPageResponse(tenantDtos, tenantsPage.getTotalPages(), tenantsPage.getTotalElements());
+        return new PaginatedResponse<>(tenantDtos, tenantsPage.getTotalPages(), tenantsPage.getTotalElements());
     }
 
     public TenantResponseDto getTenantById(Long id) {

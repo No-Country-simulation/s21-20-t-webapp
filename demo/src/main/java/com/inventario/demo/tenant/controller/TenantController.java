@@ -1,7 +1,7 @@
 package com.inventario.demo.tenant.controller;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.tenant.dtoRequest.TenantRequestDto;
-import com.inventario.demo.tenant.dtoResponse.TenantPageResponse;
 import com.inventario.demo.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.tenant.service.TenantService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,10 +25,10 @@ public class TenantController {
     @Operation(summary = "Obtener todos los tenants", description = "Lista todos los tenants")
     @ApiResponse(responseCode = "200", description = "Tenants obtenidos exitosamente")
     @GetMapping
-    public ResponseEntity<TenantPageResponse> getAllTenants(
+    public ResponseEntity<PaginatedResponse<TenantResponseDto>> getAllTenants(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        TenantPageResponse response = tenantService.getAllTenants(page, size);
+        PaginatedResponse<TenantResponseDto> response = tenantService.getAllTenants(page, size);
         return ResponseEntity.ok(response);
     }
 

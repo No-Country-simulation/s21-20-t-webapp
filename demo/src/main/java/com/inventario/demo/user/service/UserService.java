@@ -1,8 +1,8 @@
 package com.inventario.demo.user.service;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.UserNotFoundException;
 import com.inventario.demo.user.dtoRequest.UserRequestDto;
-import com.inventario.demo.user.dtoResponse.UserPageResponse;
 import com.inventario.demo.user.dtoResponse.UserResponseDto;
 import com.inventario.demo.user.mapper.UserMapper;
 import com.inventario.demo.user.model.UserModel;
@@ -27,7 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserPageResponse getAllUsers(int page, int size) {
+    public PaginatedResponse<UserResponseDto> getAllUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
         // Obtener la página de usuarios
@@ -39,7 +39,7 @@ public class UserService {
                 .collect(Collectors.toList());
 
         // Devolver la respuesta con la información de paginación
-        return new UserPageResponse(userDtos, usersPage.getTotalPages(), usersPage.getTotalElements());
+        return new PaginatedResponse<>(userDtos, usersPage.getTotalPages(), usersPage.getTotalElements());
     }
 
     public UserResponseDto getUserById(Long id) {

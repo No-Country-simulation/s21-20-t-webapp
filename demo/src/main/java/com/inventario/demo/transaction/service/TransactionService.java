@@ -1,12 +1,12 @@
 package com.inventario.demo.transaction.service;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.ResourceNotFoundException;
 import com.inventario.demo.config.exceptions.TenantNotFoundException;
 import com.inventario.demo.config.exceptions.UserNotFoundException;
 import com.inventario.demo.tenant.model.TenantModel;
 import com.inventario.demo.tenant.repository.TenantRepository;
 import com.inventario.demo.transaction.dtoRequest.TransactionRequestDto;
-import com.inventario.demo.transaction.dtoResponse.TransactionPageResponse;
 import com.inventario.demo.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.transaction.mapper.TransactionMapper;
 import com.inventario.demo.transaction.model.TransactionModel;
@@ -31,12 +31,12 @@ public class TransactionService {
     private final TenantRepository tenantRepository;
     private final UserRepository userRepository;
 
-    public TransactionPageResponse getAllTransactions(int page, int size) {
+    public PaginatedResponse<TransactionResponseDto> getAllTransactions(int page, int size) {
         Page<TransactionModel> transactionPage = transactionRepository.findAll(PageRequest.of(page, size));
         List<TransactionResponseDto> transactionDtos = transactionPage.getContent().stream()
                 .map(transactionMapper::toDto)
                 .collect(Collectors.toList());
-        return new TransactionPageResponse(transactionDtos, transactionPage.getTotalPages(), transactionPage.getTotalElements());
+        return new PaginatedResponse<>(transactionDtos, transactionPage.getTotalPages(), transactionPage.getTotalElements());
     }
 
     public TransactionResponseDto getTransactionById(Long id) {

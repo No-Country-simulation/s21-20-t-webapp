@@ -169,4 +169,16 @@ public class GlobalExceptionController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
+    @ExceptionHandler(InventoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInventoryNotFoundException(InventoryNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "INVENTORY_NOT_FOUND",
+                "El inventario no fue encontrado",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        log.warn("Inventory not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.inventario.demo.user.controller;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.user.dtoRequest.UserRequestDto;
-import com.inventario.demo.user.dtoResponse.UserPageResponse;
 import com.inventario.demo.user.dtoResponse.UserResponseDto;
 import com.inventario.demo.user.model.UserModel;
 import com.inventario.demo.user.repository.UserRepository;
@@ -28,11 +28,11 @@ public class UserController {
     @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista paginada de usuarios.")
     @ApiResponse(responseCode = "200", description = "Usuarios obtenidos exitosamente")
     @GetMapping
-    public ResponseEntity<UserPageResponse> getAllUsers(
+    public ResponseEntity<PaginatedResponse<UserResponseDto>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        UserPageResponse response = userService.getAllUsers(page, size);
+        PaginatedResponse<UserResponseDto> response = userService.getAllUsers(page, size);
         return ResponseEntity.ok(response);
     }
 

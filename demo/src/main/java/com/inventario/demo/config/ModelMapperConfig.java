@@ -1,5 +1,7 @@
 package com.inventario.demo.config;
 
+import com.inventario.demo.inventory.dtoRequest.InventoryRequestDto;
+import com.inventario.demo.inventory.model.InventoryModel;
 import com.inventario.demo.tenant.mapper.TenantMapper;
 import com.inventario.demo.transaction.dtoRequest.TransactionRequestDto;
 import com.inventario.demo.transaction.mapper.TransactionMapper;
@@ -22,23 +24,13 @@ public class ModelMapperConfig {
                     m.skip(TransactionModel::setTenant);
                     m.skip(TransactionModel::setCreatedBy);
                 });
+
+        mapper.typeMap(InventoryRequestDto.class, InventoryModel.class)
+                .addMappings(m -> {
+                    m.skip(InventoryModel::setId);
+                    //m.skip((InventoryModel::setProduct));
+                    m.skip(InventoryModel::setTenant);
+                });
         return mapper;
     }
-
-    @Bean
-    public UserMapper userMapper(ModelMapper modelMapper) {
-        return new UserMapper(modelMapper);
-    }
-
-    @Bean
-    public TenantMapper tenantMapper(ModelMapper modelMapper) {
-        return new TenantMapper(modelMapper);
-    }
-
-    @Bean
-    public TransactionMapper transactionMapper(ModelMapper modelMapper) {
-
-        return new TransactionMapper(modelMapper);
-    }
-
 }
