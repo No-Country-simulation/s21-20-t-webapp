@@ -43,15 +43,15 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "Registrar nuevo usuario", description = """
-            Registra un nuevo usuario y obtiene un token de autenticación.\s
-            Los roles del usuario deben ser 'USER' o 'ADMIN'. No se puede registrar otro tipo de rol.\s
-            Todos los campos son obligatorios excepto la foto.
-            El email debe ser único.
-            """)
-    @PostMapping(value = "/register")
-    public ResponseEntity<AuthResponseRegisterDto> register(@RequestBody @Valid AuthCreateUserRequestDto authCreateUserDto) {
-        AuthResponseRegisterDto response = userDetailsServiceImpl.createUser(authCreateUserDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+//    @Operation(summary = "Registrar nuevo usuario", description = """
+//            Registra un nuevo usuario y obtiene un token de autenticación.\s
+//            Los roles del usuario deben ser 'USER' o 'ADMIN'. No se puede registrar otro tipo de rol.\s
+//            Todos los campos son obligatorios excepto la foto.
+//            El email debe ser único.
+//            """)
+//    @PostMapping(value = "/register")
+//    public ResponseEntity<AuthResponseRegisterDto> register(@RequestBody @Valid AuthCreateUserRequestDto authCreateUserDto) {
+//        AuthResponseRegisterDto response = userDetailsServiceImpl.createUser(authCreateUserDto, null);
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
 }

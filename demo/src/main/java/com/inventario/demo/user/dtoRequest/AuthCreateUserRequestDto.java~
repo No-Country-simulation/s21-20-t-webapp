@@ -27,7 +27,7 @@ public record AuthCreateUserRequestDto (@NotBlank(message = "El nombre es obliga
                                         @Schema(description = "Pais del usuario",  requiredMode = Schema.RequiredMode.REQUIRED, example = "Colombia")
                                         String country,
                                         @NotNull(message = "La fecha de nacimiento es obligatoria")
-                                        @Schema(description = "Fecha de nacimiento del usuario",  requiredMode = Schema.RequiredMode.REQUIRED, example = "1990-01-01")
+                                        @Schema(description = "Fecha de nacimiento del usuario",  requiredMode = Schema.RequiredMode.REQUIRED, example = "1990-01-01T00:00:00")
                                         LocalDate birthDate,
                                         @Valid
                                         @Schema(description = "Roles del usuario",  requiredMode = Schema.RequiredMode.REQUIRED)

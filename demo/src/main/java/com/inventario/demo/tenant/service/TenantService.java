@@ -7,6 +7,7 @@ import com.inventario.demo.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.tenant.mapper.TenantMapper;
 import com.inventario.demo.tenant.model.TenantModel;
 import com.inventario.demo.tenant.repository.TenantRepository;
+import com.inventario.demo.user.model.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,8 @@ public class TenantService {
     public TenantResponseDto getTenantById(Long id) {
         TenantModel tenant = tenantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tenant no encontrado con id: " + id));
+        UserModel user = new UserModel();
+        user.setTenant(tenant);
         return tenantMapper.toDto(tenant);
     }
 

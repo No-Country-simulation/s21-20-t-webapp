@@ -18,6 +18,7 @@ public class UserResponseDto {
     private String lastName;
     private Long phoneNumber;
     private LocalDate birthDate;
+    private Long tenantId;
     private LocalDate registerDate;
     private LocalDate lastLogin;
 }

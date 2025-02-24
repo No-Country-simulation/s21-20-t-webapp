@@ -1,6 +1,7 @@
 package com.inventario.demo.user.service.impl;
 
 import com.inventario.demo.config.jwt.JwtUtils;
+import com.inventario.demo.tenant.model.TenantModel;
 import com.inventario.demo.user.dtoRequest.AuthCreateUserRequestDto;
 import com.inventario.demo.user.dtoRequest.AuthLoginRequestDto;
 import com.inventario.demo.user.dtoResponse.AuthResponseDto;
@@ -96,7 +97,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     }
 
-    public AuthResponseRegisterDto createUser(@Valid AuthCreateUserRequestDto authCreateUserDto) {
+    public AuthResponseRegisterDto createUser(@Valid AuthCreateUserRequestDto authCreateUserDto, Long tenantId) {
 
         String email = authCreateUserDto.email();
         String password = authCreateUserDto.password();
@@ -124,6 +125,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .phoneNumber((long) phoneNumber)
                 .country(country)
                 .birthDate(birthDate)
+                .tenant(TenantModel.builder().id(tenantId).build())
                 .registerDate(LocalDate.now())
                 .lastLogin(LocalDate.now())
                 .roles(roleEntities)

@@ -1,9 +1,10 @@
 package com.inventario.demo.transaction.service;
 
 import com.inventario.demo.config.exceptions.ResourceNotFoundException;
+import com.inventario.demo.config.exceptions.TenantNotFoundException;
+import com.inventario.demo.config.exceptions.UserNotFoundException;
 import com.inventario.demo.tenant.model.TenantModel;
 import com.inventario.demo.tenant.repository.TenantRepository;
-import com.inventario.demo.tenant.service.TenantService;
 import com.inventario.demo.transaction.dtoRequest.TransactionRequestDto;
 import com.inventario.demo.transaction.dtoResponse.TransactionPageResponse;
 import com.inventario.demo.transaction.dtoResponse.TransactionResponseDto;
@@ -12,15 +13,11 @@ import com.inventario.demo.transaction.model.TransactionModel;
 import com.inventario.demo.transaction.respository.TransactionRepository;
 import com.inventario.demo.user.model.UserModel;
 import com.inventario.demo.user.repository.UserRepository;
-import com.inventario.demo.user.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,10 +47,10 @@ public class TransactionService {
 
     public TransactionResponseDto createTransaction(TransactionRequestDto dto) {
         TenantModel tenant = tenantRepository.findById(dto.getTenantId())
-                .orElseThrow(() -> new EntityNotFoundException("Tenant no encontrado"));
+                .orElseThrow(() -> new TenantNotFoundException("Tenant no encontrado"));
 
         UserModel user = userRepository.findById(dto.getCreatedById())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         // Se mapean los campos simples del DTO a la entidad
         TransactionModel transaction = transactionMapper.toEntity(dto);
