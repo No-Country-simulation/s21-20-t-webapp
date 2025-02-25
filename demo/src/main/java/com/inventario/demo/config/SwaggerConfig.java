@@ -43,35 +43,13 @@ import org.springframework.http.HttpHeaders;
                         }
                 ),
                 @Server(
-                        description = "Staging Environment",
-                        url = "https://staging.inventory-saas.com",
+                        description = "Production",
+                        url = "https://inventory-lrkf.onrender.com",
                         variables = {
                                 @ServerVariable(
                                         name = "tenantId",
                                         defaultValue = "test-tenant",
                                         description = "ID de tenant para pruebas"
-                                )
-                        }
-                ),
-                @Server(
-                        description = "Production Cluster EU",
-                        url = "https://eu.api.inventory-saas.com",
-                        variables = {
-                                @ServerVariable(
-                                        name = "tenantId",
-                                        defaultValue = "default-tenant",
-                                        description = "ID de tenant específico"
-                                )
-                        }
-                ),
-                @Server(
-                        description = "Production Cluster US",
-                        url = "https://us.api.inventory-saas.com",
-                        variables = {
-                                @ServerVariable(
-                                        name = "tenantId",
-                                        description = "ID de tenant específico",
-                                        defaultValue = "default-tenant"
                                 )
                         }
                 )
