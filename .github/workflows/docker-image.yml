@@ -30,7 +30,7 @@ jobs:
           URL_DB: ${{ secrets.URL_DB }}
           USER_DB: ${{ secrets.USER_DB }}
           PASSWORD_DB: ${{ secrets.PASSWORD_DB }}
-        run: mvn -f ./pom.xml clean package -DskipTests
+        run: mvn -f ./demo/pom.xml clean package -DskipTests
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
