@@ -24,6 +24,9 @@ export interface Tenant {
     creadoEn?: Date;
     actualizadoEn?: Date;
   }
+  export interface AuthResponse {
+    token: string;
+  }
   
   export interface Producto {
     id: string;
@@ -32,6 +35,7 @@ export interface Tenant {
     nombre: string;
     sku: string;
     camposPersonalizados: any; // JSONB para datos adicionales
+    stock: number;
     creadoEn?: Date;
     actualizadoEn?: Date;
   }
