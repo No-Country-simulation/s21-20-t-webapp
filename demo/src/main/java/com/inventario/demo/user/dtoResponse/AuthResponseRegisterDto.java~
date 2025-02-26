@@ -1,8 +1,0 @@
-package com.inventario.demo.user.dtoResponse;
-
-public record AuthResponseRegisterDto (Long userId,
-                                      String email,
-                                      String message,
-                                      String jwt,
-                                      boolean status){
-}

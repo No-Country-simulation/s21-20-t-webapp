@@ -36,7 +36,6 @@ public class AuthController {
     public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid AuthLoginRequestDto authDto) {
         AuthResponseDto response = this.userDetailsServiceImpl.loginUser(authDto);
 
-        // Incluir el token en el encabezado "Authorization"
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.token())
                 .body(response);

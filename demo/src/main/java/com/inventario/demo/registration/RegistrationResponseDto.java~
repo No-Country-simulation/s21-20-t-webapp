@@ -1,6 +1,5 @@
 package com.inventario.demo.registration;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inventario.demo.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.user.dtoResponse.AuthResponseRegisterDto;
 import com.inventario.demo.user.dtoResponse.UserCreationResult;
@@ -16,6 +15,4 @@ import lombok.Setter;
 public class RegistrationResponseDto {
     private UserCreationResult authResponse;
     private TenantResponseDto tenantResponse;
-    @JsonIgnore
-    private String token;
 }

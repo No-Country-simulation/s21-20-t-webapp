@@ -6,6 +6,7 @@ import com.inventario.demo.user.dtoRequest.AuthCreateUserRequestDto;
 import com.inventario.demo.user.dtoRequest.AuthLoginRequestDto;
 import com.inventario.demo.user.dtoResponse.AuthResponseDto;
 import com.inventario.demo.user.dtoResponse.AuthResponseRegisterDto;
+import com.inventario.demo.user.dtoResponse.UserCreationResult;
 import com.inventario.demo.user.model.RoleModel;
 import com.inventario.demo.user.model.UserModel;
 import com.inventario.demo.user.repository.RoleRepository;
@@ -97,7 +98,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     }
 
-    public AuthResponseRegisterDto createUser(@Valid AuthCreateUserRequestDto authCreateUserDto, Long tenantId) {
+    public UserCreationResult createUser(@Valid AuthCreateUserRequestDto authCreateUserDto, Long tenantId) {
 
         String email = authCreateUserDto.email();
         String password = authCreateUserDto.password();
@@ -109,9 +110,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         List<String> roles = authCreateUserDto.roleDto().roles();
 
-
         Set<RoleModel> roleEntities = new HashSet<>(roleRepository.findRoleEntitiesByEnumRoleIn(roles));
-
 
         if (roleEntities.isEmpty()) {
             throw new IllegalArgumentException("Los roles especificados no existen");
@@ -122,7 +121,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .password(passwordEncoder.encode(password))
                 .name(username)
                 .lastName(lastName)
-                .phoneNumber((long) phoneNumber)
+                .phoneNumber(phoneNumber)
                 .country(country)
                 .birthDate(birthDate)
                 .tenant(TenantModel.builder().id(tenantId).build())
@@ -133,11 +132,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         UserModel userCreated = userRepository.save(userEntity);
 
-        ArrayList<SimpleGrantedAuthority> authoritiesList = new ArrayList<>();
+        List<SimpleGrantedAuthority> authoritiesList = new ArrayList<>();
 
-        userCreated.getRoles().forEach(role -> {
-            authoritiesList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getEnumRole().name())));
-        });
+        userCreated.getRoles().forEach(role ->
+                authoritiesList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getEnumRole().name())))
+        );
 
         userCreated.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())
@@ -146,7 +145,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userCreated.getEmail(), userCreated.getPassword(), authoritiesList);
         String accessToken = jwtUtils.generateJwtToken(authentication);
 
+        // Se crea el DTO que se enviará en el cuerpo sin el token
+        AuthResponseRegisterDto responseWithoutToken = new AuthResponseRegisterDto(
+                userCreated.getId(),
+                username,
+                "Usuario registrado exitosamente",
+                true
+        );
 
-        return new AuthResponseRegisterDto(userCreated.getId(), username, "Usuario registrado exitosamente", accessToken, true);
+        // Retornamos ambos: la respuesta sin token y el token generado para usar en el header
+        return new UserCreationResult(responseWithoutToken, accessToken);
     }
+
 }

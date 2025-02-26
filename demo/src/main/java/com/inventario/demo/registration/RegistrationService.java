@@ -5,6 +5,7 @@ import com.inventario.demo.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.tenant.service.TenantService;
 import com.inventario.demo.user.dtoRequest.AuthCreateUserRequestDto;
 import com.inventario.demo.user.dtoResponse.AuthResponseRegisterDto;
+import com.inventario.demo.user.dtoResponse.UserCreationResult;
 import com.inventario.demo.user.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,10 @@ public class RegistrationService {
 
         // 2. Crear el usuario administrador asociado al tenant recién creado
         AuthCreateUserRequestDto userDto = registrationRequestDto.getUser();
-        AuthResponseRegisterDto authResponse = userService.createUser(userDto, tenantResponse.getId());
+        UserCreationResult authResponse = userService.createUser(userDto, tenantResponse.getId());
 
 
         // 3. Retornar la respuesta compuesta: datos de autenticación y del tenant
-        return new RegistrationResponseDto(authResponse, tenantResponse);
+        return new RegistrationResponseDto(authResponse, tenantResponse, authResponse.getToken());
     }
 }
