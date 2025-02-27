@@ -1,27 +1,102 @@
-<div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-4">Gestión de Productos</h1>
-    <table class="min-w-full bg-white">
+<div class="p-4">
+  <table class="w-full table-auto">
+    <thead>
+      <tr>
+        <th class="border px-4 py-2">Nombre</th>
+        <th class="border px-4 py-2">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let categoria of categorias" class="border">
+        <td class="border px-4 py-2">{{ categoria.nombre }}</td>
+        <td class="border px-4 py-2">
+          <button
+            (click)="cargarProductos(+categoria.id)"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Ver productos
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="productos.length > 0">
+    <h3 class="text-xl font-bold mt-4">Productos</h3>
+
+    <div class="mb-4">
+      <input
+        type="text"
+        [(ngModel)]="nuevoProducto.nombre"
+        placeholder="Nombre del producto"
+        class="border p-2 w-full"
+      />
+      <input
+        type="text"
+        [(ngModel)]="nuevoProducto.sku"
+        placeholder="SKU"
+        class="border p-2 w-full mt-2"
+      />
+      <button
+        (click)="crearProducto()"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+      >
+        Crear producto
+      </button>
+    </div>
+
+    <table class="w-full table-auto">
       <thead>
         <tr>
-          <th class="py-2">Nombre</th>
-          <th class="py-2">Descripción</th>
-          <th class="py-2">Precio</th>
-          <th class="py-2">Stock</th>
-          <th class="py-2">Acciones</th>
+          <th class="border px-4 py-2">Nombre</th>
+          <th class="border px-4 py-2">SKU</th>
+          <th class="border px-4 py-2">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let producto of productos">
-          <td class="py-2">{{ producto.nombre }}</td>
-          <td class="py-2">{{ producto.sku }}</td>
-          <td class="py-2">{{ producto.categoriaId  }}</td>
-          <td class="py-2">{{ producto.stock }}</td>
-          <td class="py-2">
-            <button class="bg-blue-500 text-white px-2 py-1 rounded">Editar</button>
-            <button (click)="eliminarProducto(producto.id)" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</button>
+        <tr *ngFor="let producto of productos" class="border">
+          <td class="border px-4 py-2">{{ producto.nombre }}</td>
+          <td class="border px-4 py-2">{{ producto.sku }}</td>
+          <td class="border px-4 py-2">
+            <button
+              (click)="seleccionarProducto(producto)"
+              class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Editar
+            </button>
+            <button
+              (click)="eliminarProducto(+producto.id)"
+              class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Eliminar
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div *ngIf="productoSeleccionado">
+      <h3 class="text-xl font-bold mt-4">Editar producto</h3>
+      <input
+        type="text"
+        [(ngModel)]="productoSeleccionado.nombre"
+        placeholder="Nombre"
+        class="border p-2 w-full"
+      />
+      <input
+        type="text"
+        [(ngModel)]="productoSeleccionado.sku"
+        placeholder="SKU"
+        class="border p-2 w-full mt-2"
+      />
+      <button
+        (click)="editarProducto()"
+        class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-2"
+      >
+        Guardar cambios
+      </button>
+    </div>
+  </div>
+    <p *ngIf="errorMessage" class="text-red-500">{{ errorMessage }}</p>
   </div>
   

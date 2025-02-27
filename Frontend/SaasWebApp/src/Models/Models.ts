@@ -1,5 +1,5 @@
 export interface Tenant {
-    id: string;
+    id: number;
     nombre: string;
     configuracion: any; // JSONB puede ser cualquier estructura
     creadoEn?: Date;
@@ -7,8 +7,8 @@ export interface Tenant {
   }
   
   export interface Usuario {
-    id: string;
-    tenantId: string;
+    id: number;
+    tenantId: number;
     email: string;
     password: string;
     rol?: string; // 'admin', 'manager', 'viewer', etc.
@@ -17,8 +17,8 @@ export interface Tenant {
   }
   
   export interface CategoriaProducto {
-    id: string;
-    tenantId: string;
+    id: number;
+    tenantId: number;
     nombre: string;
     camposPersonalizados: any; // JSONB para datos dinámicos
     creadoEn?: Date;
@@ -29,9 +29,9 @@ export interface Tenant {
   }
   
   export interface Producto {
-    id: string;
-    tenantId: string;
-    categoriaId?: string;
+    id: number;
+    tenantId: number;
+    categoriaId?: number;
     nombre: string;
     sku: string;
     camposPersonalizados: any; // JSONB para datos adicionales
@@ -41,9 +41,9 @@ export interface Tenant {
   }
   
   export interface Inventario {
-    id: string;
-    productoId: string;
-    tenantId: string;
+    id: number;
+    productoId: number;
+    tenantId: number;
     cantidad: number;
     ubicacion?: string;
     creadoEn?: Date;
@@ -51,9 +51,9 @@ export interface Tenant {
   }
   
   export interface Transaccion {
-    id: string;
-    tenantId: string;
-    productoId: string;
+    id: number;
+    tenantId: number;
+    productoId: number;
     cantidad: number;
     tipo: 'entrada' | 'salida' | 'ajuste';
     referencia?: string;

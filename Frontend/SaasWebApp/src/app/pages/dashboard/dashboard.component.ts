@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../../Services/producto.service';
+import { Producto } from '../../../Models/Models';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,9 +15,9 @@ export class DashboardComponent implements OnInit {
   constructor(private productoService: ProductoService) {}
 
   ngOnInit(): void {
-    this.productoService.obtenerProductos().subscribe((productos) => {
+    this.productoService.obtenerProductos('someId').subscribe((productos: Producto[]) => {
       this.totalProductos = productos.length;
-      this.totalStock = productos.reduce((acc, p) => acc + p.stock, 0);
+      this.totalStock = productos.reduce((acc: number, p: Producto) => acc + p.stock, 0);
     });
   }
 }

@@ -1,35 +1,51 @@
+// src/app/Services/producto.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Producto, Inventario } from '../../Models/Models';
+import { Producto } from '../../Models/Models'; // Asegúrate de que la ruta sea correcta
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductoService {
-  private apiUrl = 'https://tu-api.com/productos';
-  private inventarioUrl = 'https://tu-api.com/inventarios';
+  private apiUrl = 'https://inventory-lrkf.onrender.com/product'; // Reemplaza con tu URL
 
   constructor(private http: HttpClient) {}
 
-  // ✅ Este método debe ser usado en ProductosComponent
-  obtenerProductos(): Observable<Producto[]> {
-    return this.http.get<Producto[]>(this.apiUrl);
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
   }
 
-  obtenerInventarios(): Observable<Inventario[]> {
-    return this.http.get<Inventario[]>(this.inventarioUrl);
+  getProductos(tenantId: number, categoriaId: number): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.apiUrl}/${tenantId}/${categoriaId}`, {
+      headers: this.getHeaders(),
+    });
   }
 
-  agregarProducto(producto: Producto): Observable<Producto> {
-    return this.http.post<Producto>(this.apiUrl, producto);
+  crearProducto(producto: Producto): Observable<Producto> {
+    return this.http.post<Producto>(this.apiUrl, producto, {
+      headers: this.getHeaders(),
+    });
   }
 
-  actualizarProducto(id: string, producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
+  actualizarProducto(producto: Producto): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/${producto.id}`, producto, {
+      headers: this.getHeaders(),
+    });
   }
 
-  eliminarProducto(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  eliminarProducto(productoId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productoId}`, {
+      headers: this.getHeaders(),
+    });
+  }
+
+
+  obtenerProductos(id: string): Observable<Producto[]> {
+    // Implementation to fetch products based on the provided id
+    return this.http.get<Producto[]>(`/api/productos/${id}`);
   }
 }
