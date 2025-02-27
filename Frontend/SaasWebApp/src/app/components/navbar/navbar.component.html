@@ -6,7 +6,7 @@
     <a class="px-4" href="/usuarios">Usuarios</a>
 
     <ng-container *ngIf="isLoggedIn; else authButtons">
-      <span class="px-4">Bienvenido, {{ userName }}</span>
+      <span class="px-4">Bienvenido, {{ name }}</span>
       <button (click)="logout()" class="bg-red-500 px-3 py-1 rounded">Cerrar Sesión</button>
     </ng-container>
 
