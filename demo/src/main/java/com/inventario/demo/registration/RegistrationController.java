@@ -32,6 +32,7 @@ public class RegistrationController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + token);
+        headers.set("user-id", registrationResponseDto.getAuthResponse().getResponse().userId().toString());
 
         RegistrationResponseDto responseWithoutToken = new RegistrationResponseDto(
                 registrationResponseDto.getAuthResponse(),

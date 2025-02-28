@@ -38,6 +38,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.token())
+                .header("user-id", response.id().toString())
                 .body(response);
     }
 
