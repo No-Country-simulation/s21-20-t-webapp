@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule], 
+  imports: [CommonModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
@@ -22,19 +22,18 @@ export class NavbarComponent {
 
   checkLoginStatus() {
     this.isLoggedIn = this.authService.isLoggedIn();
-  
     if (this.isLoggedIn) {
       this.authService.getUserProfile().subscribe(
         (user) => {
-          console.log("Usuario autenticado:", user); // <-- Verifica que reciba los datos correctos
-          if (user) {
+          console.log("respuesta del getUserProfile", user);
+          if (user && user.name && user.lastName) {
             this.name = `${user.name} ${user.lastName}`;
           } else {
             this.name = 'Usuario';
           }
         },
         (error) => {
-          console.error("Error obteniendo perfil:", error);
+          console.error('Error obteniendo perfil:', error);
           this.name = 'Usuario';
         }
       );
@@ -42,8 +41,7 @@ export class NavbarComponent {
       this.name = '';
     }
   }
-  
-  
+
   login(): void {
     this.router.navigate(['/login']);
   }
@@ -54,17 +52,15 @@ export class NavbarComponent {
 
   logout(): void {
     this.authService.logout();
-    this.checkLoginStatus();  // Actualiza el estado al hacer logout
+    this.checkLoginStatus();
     this.router.navigate(['/login']);
   }
 
   private decodeToken(token: string): any {
     try {
-      return JSON.parse(atob(token.split('.')[1])); // Decodifica el payload del JWT
+      return JSON.parse(atob(token.split('.')[1]));
     } catch (e) {
       return null;
     }
   }
-
-  
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,15 +13,21 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/auth/login`, { email, password }).pipe(
-      tap((response) => {
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-          this.isAuthenticated = true;
-        }
-      })
-    );
+    return this.http
+      .post<any>(`${this.apiUrl}/auth/login`, { email, password }, { observe: 'response' })
+      .pipe(
+        tap((response: HttpResponse<any>) => {
+          console.log('Respuesta del login:', response);
+          if (response.body && response.body.token && response.body.id) {
+            localStorage.setItem('token', response.body.token);
+            localStorage.setItem('userId', response.body.id.toString()); // Convertir el id a string
+            console.log('Token almacenado:', response.body.token);
+            console.log('UserId almacenado:', response.body.id);
+          }
+        })
+      );
   }
+
 
   register(
     companyName: string,
@@ -78,26 +84,26 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!localStorage.getItem('token');
   }
+
   getUserProfile(): Observable<any> {
     const token = localStorage.getItem('token');
-    if (!token) return of(null);
-  
-    const decodedToken = this.decodeToken(token);
-    const userId = decodedToken?.id;
-  
-    if (!userId) {
-      console.error("El token no contiene el ID del usuario.");
-      return of(null);
-    }
-  
-    console.log(`Obteniendo perfil del usuario con ID: ${userId}`); // <-- Verifica el ID
-  
-    return this.http.get<any>(`${this.apiUrl}/user/${userId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+    const userId = localStorage.getItem('userId');
+
+    if (!token || !userId) return of(null);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
     });
+
+    const url = `${this.apiUrl}/user/${userId}`; // URL CORRECTA
+
+    return this.http.get<any>(url, { headers }).pipe(
+      catchError((error) => {
+        console.error('Error obteniendo perfil del usuario:', error);
+        return throwError(error);
+      })
+    );
   }
-  
-  
   private decodeToken(token: string): any {
     try {
       const decoded = JSON.parse(atob(token.split('.')[1])); // Decodifica el payload del JWT
