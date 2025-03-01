@@ -4,7 +4,9 @@ import com.inventario.demo.entities.productos.dtoRequest.ProductRequestDto;
 import com.inventario.demo.entities.productos.dtoResponse.ResponseProductRequest;
 import com.inventario.demo.entities.productos.model.ProductModel;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductMapper {
     private ModelMapper modelMapper;
 
