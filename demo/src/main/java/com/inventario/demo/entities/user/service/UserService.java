@@ -1,12 +1,13 @@
 package com.inventario.demo.user.service;
 
 import com.inventario.demo.config.exceptions.UserNotFoundException;
-import com.inventario.demo.user.dtoRequest.UserRequestDto;
-import com.inventario.demo.user.dtoResponse.UserPageResponse;
-import com.inventario.demo.user.dtoResponse.UserResponseDto;
-import com.inventario.demo.user.mapper.UserMapper;
-import com.inventario.demo.user.model.UserModel;
-import com.inventario.demo.user.repository.UserRepository;
+import com.inventario.demo.entities.user.*;
+import com.inventario.demo.entities.user.dtoRequest.UserRequestDto;
+import com.inventario.demo.entities.user.dtoResponse.UserPageResponse;
+import com.inventario.demo.entities.user.dtoResponse.UserResponseDto;
+import com.inventario.demo.entities.user.mapper.UserMapper;
+import com.inventario.demo.entities.user.model.UserModel;
+import com.inventario.demo.entities.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

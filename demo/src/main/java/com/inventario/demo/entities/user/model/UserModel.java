@@ -1,6 +1,6 @@
 package com.inventario.demo.entities.user.model;
 
-import com.inventario.demo.tenant.model.TenantModel;
+import com.inventario.demo.entities.tenant.model.TenantModel;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

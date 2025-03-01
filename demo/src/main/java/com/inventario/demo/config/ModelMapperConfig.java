@@ -1,10 +1,10 @@
 package com.inventario.demo.config;
 
-import com.inventario.demo.tenant.mapper.TenantMapper;
-import com.inventario.demo.transaction.dtoRequest.TransactionRequestDto;
-import com.inventario.demo.transaction.mapper.TransactionMapper;
-import com.inventario.demo.transaction.model.TransactionModel;
-import com.inventario.demo.user.mapper.UserMapper;
+import com.inventario.demo.entities.tenant.mapper.TenantMapper;
+import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
+import com.inventario.demo.entities.transaction.mapper.TransactionMapper;
+import com.inventario.demo.entities.transaction.model.TransactionModel;
+import com.inventario.demo.entities.user.mapper.UserMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
