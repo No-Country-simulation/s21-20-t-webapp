@@ -1,9 +1,7 @@
 package com.inventario.demo.entities.user.controller;
 
-import com.inventario.demo.entities.user.dtoRequest.AuthCreateUserRequestDto;
 import com.inventario.demo.entities.user.dtoRequest.AuthLoginRequestDto;
 import com.inventario.demo.entities.user.dtoResponse.AuthResponseDto;
-import com.inventario.demo.entities.user.dtoResponse.AuthResponseRegisterDto;
 import com.inventario.demo.entities.user.service.impl.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,22 +32,22 @@ public class AuthController {
     public ResponseEntity<AuthResponseDto> login(@RequestBody @Valid AuthLoginRequestDto authDto) {
         AuthResponseDto response = this.userDetailsServiceImpl.loginUser(authDto);
 
-        // Incluir el token en el encabezado "Authorization"
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + response.token())
+                .header("user-id", response.id().toString())
                 .body(response);
     }
 
 
-    @Operation(summary = "Registrar nuevo usuario", description = """
-            Registra un nuevo usuario y obtiene un token de autenticación.\s
-            Los roles del usuario deben ser 'USER' o 'ADMIN'. No se puede registrar otro tipo de rol.\s
-            Todos los campos son obligatorios excepto la foto.
-            El email debe ser único.
-            """)
-    @PostMapping(value = "/register")
-    public ResponseEntity<AuthResponseRegisterDto> register(@RequestBody @Valid AuthCreateUserRequestDto authCreateUserDto) {
-        AuthResponseRegisterDto response = userDetailsServiceImpl.createUser(authCreateUserDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
+//    @Operation(summary = "Registrar nuevo usuario", description = """
+//            Registra un nuevo usuario y obtiene un token de autenticación.\s
+//            Los roles del usuario deben ser 'USER' o 'ADMIN'. No se puede registrar otro tipo de rol.\s
+//            Todos los campos son obligatorios excepto la foto.
+//            El email debe ser único.
+//            """)
+//    @PostMapping(value = "/register")
+//    public ResponseEntity<AuthResponseRegisterDto> register(@RequestBody @Valid AuthCreateUserRequestDto authCreateUserDto) {
+//        AuthResponseRegisterDto response = userDetailsServiceImpl.createUser(authCreateUserDto, null);
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
 }

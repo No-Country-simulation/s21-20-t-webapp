@@ -4,7 +4,9 @@ import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.dtoRequest.TenantRequestDto;
 import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TenantMapper {
     private final ModelMapper modelMapper;
 

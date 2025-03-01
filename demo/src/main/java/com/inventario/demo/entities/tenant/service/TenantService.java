@@ -1,12 +1,13 @@
-package com.inventario.demo.entities.tenant.service;
+package com.inventario.demo.tenant.service;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.ResourceNotFoundException;
+import com.inventario.demo.entities.tenant.dtoRequest.TenantRequestDto;
+import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.entities.tenant.mapper.TenantMapper;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.repository.TenantRepository;
-import com.inventario.demo.entities.tenant.dtoRequest.TenantRequestDto;
-import com.inventario.demo.entities.tenant.dtoResponse.TenantPageResponse;
-import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
+import com.inventario.demo.entities.user.model.UserModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,7 @@ public class TenantService {
         this.tenantMapper = tenantMapper;
     }
 
-    public TenantPageResponse getAllTenants(int page, int size) {
+    public PaginatedResponse<TenantResponseDto> getAllTenants(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<TenantModel> tenantsPage = tenantRepository.findAll(pageable);
 
@@ -35,12 +36,14 @@ public class TenantService {
                 .map(tenantMapper::toDto)
                 .collect(Collectors.toList());
 
-        return new TenantPageResponse(tenantDtos, tenantsPage.getTotalPages(), tenantsPage.getTotalElements());
+        return new PaginatedResponse<>(tenantDtos, tenantsPage.getTotalPages(), tenantsPage.getTotalElements());
     }
 
     public TenantResponseDto getTenantById(Long id) {
         TenantModel tenant = tenantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tenant no encontrado con id: " + id));
+        UserModel user = new UserModel();
+        user.setTenant(tenant);
         return tenantMapper.toDto(tenant);
     }
 

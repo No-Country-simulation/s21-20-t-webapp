@@ -2,10 +2,9 @@ package com.inventario.demo.entities.user.dtoResponse;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"userId", "email", "message", "jwt", "status"})
+@JsonPropertyOrder({"userId", "username", "message", "jwt", "status"})
 public record AuthResponseRegisterDto (Long userId,
-                                      String email,
+                                      String username,
                                       String message,
-                                      String jwt,
                                       boolean status){
 }

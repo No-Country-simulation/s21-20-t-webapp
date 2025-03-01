@@ -1,4 +1,4 @@
-package com.inventario.demo.entities.transaction.dtoResponse;
+package com.inventario.demo.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransactionPageResponse {
-    private List<TransactionResponseDto> transactions;
+public class PaginatedResponse<T> {
+    private List<T> content;
     private int totalPages;
     private long totalElements;
 }

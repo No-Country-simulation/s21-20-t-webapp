@@ -1,12 +1,12 @@
 package com.inventario.demo.entities.transaction.mapper;
 
-import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
+import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.model.TransactionModel;
-import com.inventario.demo.user.model.UserModel;
-import com.inventario.demo.user.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TransactionMapper {
 
     private final ModelMapper modelMapper;

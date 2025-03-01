@@ -4,7 +4,9 @@ import com.inventario.demo.entities.user.dtoRequest.UserRequestDto;
 import com.inventario.demo.entities.user.dtoResponse.UserResponseDto;
 import com.inventario.demo.entities.user.model.UserModel;
 import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper {
     private final ModelMapper modelMapper;
 

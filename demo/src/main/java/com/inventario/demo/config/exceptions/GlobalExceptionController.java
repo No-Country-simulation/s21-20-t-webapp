@@ -2,6 +2,7 @@ package com.inventario.demo.config.exceptions;
 
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -141,6 +142,42 @@ public class GlobalExceptionController {
         );
 
         log.warn("Resource not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(TenantNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTenantNotFoundException(TenantNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "TENANT_NOT_FOUND",
+                "El tenant no fue encontrado",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        log.warn("Tenant not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "DATA_INTEGRITY_VIOLATION",
+                "Integridad de datos violada",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        log.warn("Data integrity violation: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(InventoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInventoryNotFoundException(InventoryNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "INVENTORY_NOT_FOUND",
+                "El inventario no fue encontrado",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        log.warn("Inventory not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 

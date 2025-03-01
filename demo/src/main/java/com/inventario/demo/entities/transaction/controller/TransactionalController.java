@@ -1,9 +1,9 @@
 package com.inventario.demo.entities.transaction.controller;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.service.TransactionService;
-import com.inventario.demo.entities.transaction.dtoResponse.TransactionPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,10 +24,10 @@ public class TransactionalController {
     @Operation(summary = "Obtiene todas las transacciones", description = "Retorna todas las transacciones existentes")
     @ApiResponse(responseCode = "200", description = "Transacciones obtenidas exitosamente")
     @GetMapping
-    public ResponseEntity<TransactionPageResponse> getAllTransactions(
+    public ResponseEntity<PaginatedResponse<TransactionResponseDto>> getAllTransactions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        TransactionPageResponse response = transactionService.getAllTransactions(page, size);
+        PaginatedResponse<TransactionResponseDto> response = transactionService.getAllTransactions(page, size);
         return ResponseEntity.ok(response);
     }
 

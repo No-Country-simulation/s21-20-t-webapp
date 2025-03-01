@@ -1,17 +1,18 @@
 package com.inventario.demo.entities.transaction.service;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.ResourceNotFoundException;
+import com.inventario.demo.config.exceptions.TenantNotFoundException;
+import com.inventario.demo.config.exceptions.UserNotFoundException;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.repository.TenantRepository;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
-import com.inventario.demo.entities.transaction.dtoResponse.TransactionPageResponse;
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.mapper.TransactionMapper;
 import com.inventario.demo.entities.transaction.model.TransactionModel;
 import com.inventario.demo.entities.transaction.respository.TransactionRepository;
-import com.inventario.demo.user.model.UserModel;
-import com.inventario.demo.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.inventario.demo.entities.user.model.UserModel;
+import com.inventario.demo.entities.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,12 +31,12 @@ public class TransactionService {
     private final TenantRepository tenantRepository;
     private final UserRepository userRepository;
 
-    public TransactionPageResponse getAllTransactions(int page, int size) {
+    public PaginatedResponse<TransactionResponseDto> getAllTransactions(int page, int size) {
         Page<TransactionModel> transactionPage = transactionRepository.findAll(PageRequest.of(page, size));
         List<TransactionResponseDto> transactionDtos = transactionPage.getContent().stream()
                 .map(transactionMapper::toDto)
                 .collect(Collectors.toList());
-        return new TransactionPageResponse(transactionDtos, transactionPage.getTotalPages(), transactionPage.getTotalElements());
+        return new PaginatedResponse<>(transactionDtos, transactionPage.getTotalPages(), transactionPage.getTotalElements());
     }
 
     public TransactionResponseDto getTransactionById(Long id) {
@@ -46,10 +47,10 @@ public class TransactionService {
 
     public TransactionResponseDto createTransaction(TransactionRequestDto dto) {
         TenantModel tenant = tenantRepository.findById(dto.getTenantId())
-                .orElseThrow(() -> new EntityNotFoundException("Tenant no encontrado"));
+                .orElseThrow(() -> new TenantNotFoundException("Tenant no encontrado"));
 
         UserModel user = userRepository.findById(dto.getCreatedById())
-                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         // Se mapean los campos simples del DTO a la entidad
         TransactionModel transaction = transactionMapper.toEntity(dto);
