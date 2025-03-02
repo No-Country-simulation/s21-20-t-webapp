@@ -1,5 +1,6 @@
 package com.inventario.demo.entities.transaction.model;
 
+import com.inventario.demo.entities.productos.model.ProductModel;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.user.model.UserModel;
 import jakarta.persistence.*;
@@ -26,10 +27,9 @@ public class TransactionModel {
     @JoinColumn(name = "tenant_id", nullable = false)
     private TenantModel tenant;
 
-    // Many transactions belong to one product.
-    /*@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = ProductModel.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id", nullable = false)
-    private Product product;*/
+    private ProductModel product;
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

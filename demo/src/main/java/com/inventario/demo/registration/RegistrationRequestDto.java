@@ -1,7 +1,7 @@
 package com.inventario.demo.registration;
 
-import com.inventario.demo.tenant.dtoRequest.TenantRequestDto;
-import com.inventario.demo.user.dtoRequest.AuthCreateUserRequestDto;
+import com.inventario.demo.entities.tenant.dtoRequest.TenantRequestDto;
+import com.inventario.demo.entities.user.dtoRequest.AuthCreateUserRequestDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

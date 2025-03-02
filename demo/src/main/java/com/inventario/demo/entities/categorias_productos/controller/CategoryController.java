@@ -1,5 +1,6 @@
 package com.inventario.demo.entities.categorias_productos.controller;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryRequestDto;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.CategoryPageableResponse;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.ResponseCategoryRequest;
@@ -13,7 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/categorias_productos")
+@RequestMapping("/categorias_productos")
 @Tag(name = "Categorías de Productos")
 @Validated
 @RequiredArgsConstructor
@@ -35,13 +36,13 @@ public class CategoryController {
 
     @GetMapping
     @Operation(summary = "Listar todas las categorías de productos con paginación")
-    public ResponseEntity<CategoryPageableResponse> getAllCategories(
+    public ResponseEntity<PaginatedResponse<ResponseCategoryRequest>> getAllCategories(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(categoryService.getAllCategories(page, size));
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(summary = "Actualizar una categoría de producto")
     public ResponseEntity<ResponseCategoryRequest> updateCategory(
             @PathVariable Long id,

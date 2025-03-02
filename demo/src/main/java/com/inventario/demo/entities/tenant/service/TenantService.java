@@ -42,8 +42,6 @@ public class TenantService {
     public TenantResponseDto getTenantById(Long id) {
         TenantModel tenant = tenantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tenant no encontrado con id: " + id));
-        UserModel user = new UserModel();
-        user.setTenant(tenant);
         return tenantMapper.toDto(tenant);
     }
 

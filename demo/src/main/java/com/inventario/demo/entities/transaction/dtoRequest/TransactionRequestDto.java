@@ -19,9 +19,9 @@ public class TransactionRequestDto {
     @NotNull(message = "El id del tenant es obligatorio")
     private Long tenantId;
 
-    /*@Schema(description = "ID of the product", example = "100")
+    @Schema(description = "ID of the product", example = "100")
     @NotNull(message = "Product ID is required")
-    private Long productId;*/
+    private Long productId;
 
     @Schema(description = "Cantidad de productos en la transacción", example = "10")
     @NotNull(message = "La cantidad es obligatoria")

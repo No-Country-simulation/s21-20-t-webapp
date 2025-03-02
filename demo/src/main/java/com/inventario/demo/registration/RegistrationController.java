@@ -1,7 +1,5 @@
 package com.inventario.demo.registration;
 
-import com.inventario.demo.user.dtoResponse.UserCreationResult;
-import com.inventario.demo.user.service.impl.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

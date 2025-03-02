@@ -1,5 +1,6 @@
 package com.inventario.demo.inventory.model;
 
+import com.inventario.demo.entities.productos.model.ProductModel;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,10 +22,12 @@ public class InventoryModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //private ProductModel product;
+    @ManyToOne(targetEntity = ProductModel.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private ProductModel product;
 
     @ManyToOne(targetEntity = TenantModel.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "tenant_id")
+    @JoinColumn(name = "tenant_id", nullable = false)
     private TenantModel tenant;
 
     private Integer quantity;

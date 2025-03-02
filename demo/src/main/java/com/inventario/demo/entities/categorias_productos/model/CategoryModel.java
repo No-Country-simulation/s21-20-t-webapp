@@ -1,12 +1,17 @@
 package com.inventario.demo.entities.categorias_productos.model;
 
 import com.inventario.demo.entities.productos.model.ProductModel;
+import com.inventario.demo.entities.tenant.model.TenantModel;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,33 +28,31 @@ public class CategoryModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long tenantId;
+    @ManyToOne(targetEntity = TenantModel.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "tenant_id", nullable = false)
+    private TenantModel tenant;
 
     @Column(nullable = false, length = 255)
     private String nombre;
 
+    @Type(value = JsonBinaryType.class)
     @Column(columnDefinition = "jsonb")
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> camposPersonalizados;
-
-    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductModel> productos;
+    private Map<String, Object> camposPersonalizados = new HashMap<>();
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime creadoEn;
+    private LocalDate creadoEn;
 
     @Column(nullable = false)
-    private LocalDateTime actualizadoEn;
+    private LocalDate actualizadoEn;
 
     @PrePersist
     protected void onCreate() {
-        this.creadoEn = LocalDateTime.now();
-        this.actualizadoEn = LocalDateTime.now();
+        this.creadoEn = LocalDate.now();
+        this.actualizadoEn = LocalDate.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.actualizadoEn = LocalDateTime.now();
+        this.actualizadoEn = LocalDate.now();
     }
 }

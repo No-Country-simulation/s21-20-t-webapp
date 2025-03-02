@@ -1,9 +1,8 @@
 package com.inventario.demo.registration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.inventario.demo.tenant.dtoResponse.TenantResponseDto;
-import com.inventario.demo.user.dtoResponse.AuthResponseRegisterDto;
-import com.inventario.demo.user.dtoResponse.UserCreationResult;
+import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
+import com.inventario.demo.entities.user.dtoResponse.UserCreationResult;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

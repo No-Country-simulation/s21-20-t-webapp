@@ -1,5 +1,6 @@
 package com.inventario.demo.entities.productos.controller;
 
+import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.entities.productos.dtoRequest.ProductRequestDto;
 import com.inventario.demo.entities.productos.dtoResponse.ProductPageableResponse;
 import com.inventario.demo.entities.productos.dtoResponse.ResponseProductRequest;
@@ -24,14 +25,22 @@ public class ProductController {
 
     private final ProductService productService;
 
+    @Operation(summary = "Crear un nuevo producto", description = "Crea un nuevo producto.")
+    @ApiResponse(responseCode = "200", description = "Producto creado exitosamente")
+    @PostMapping
+    public ResponseEntity<ResponseProductRequest> createProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
+        ResponseProductRequest product = productService.saveProduct(productRequestDto);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    }
+
     @Operation(summary = "Obtener todos los productos", description = "Devuelve una lista paginada de productos.")
     @ApiResponse(responseCode = "200", description = "Productos obtenidos exitosamente")
     @GetMapping
-    public ResponseEntity<ProductPageableResponse> getAllProducts(
+    public ResponseEntity<PaginatedResponse<ResponseProductRequest>> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        ProductPageableResponse response = productService.getAllProducts(page, size);
+        PaginatedResponse<ResponseProductRequest> response = productService.getAllProducts(page, size);
         return ResponseEntity.ok(response);
     }
 

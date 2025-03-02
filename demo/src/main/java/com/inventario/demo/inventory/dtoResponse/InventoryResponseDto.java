@@ -12,7 +12,7 @@ import lombok.Setter;
 public class InventoryResponseDto {
 
     private Long id;
-    //private Long productId;
+    private Long productId;
     private Long tenantId;
     private Integer quantity;
     private String location;

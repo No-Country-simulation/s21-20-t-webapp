@@ -21,4 +21,8 @@ public class CategoryMapper {
     public ResponseCategoryRequest toDto(CategoryModel categoryModel) {
         return modelMapper.map(categoryModel, ResponseCategoryRequest.class);
     }
+
+    public void updateEntityFromDto(CategoryRequestDto dto, CategoryModel entity) {
+        modelMapper.map(dto, entity);
+    }
 }

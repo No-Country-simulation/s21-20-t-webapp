@@ -15,7 +15,9 @@ import lombok.Setter;
 @Schema(description = "Datos del inventario")
 public class InventoryRequestDto {
 
-    //private Long productId;
+    @Schema(description = "Id del producto al que pertenece el inventario", example = "1")
+    @NotNull(message = "El id del producto es obligatorio")
+    private Long productId;
 
     @Schema(description = "Id del tenant al que pertenece el inventario", example = "1")
     @NotNull(message = "El id del tenant es obligatorio")
