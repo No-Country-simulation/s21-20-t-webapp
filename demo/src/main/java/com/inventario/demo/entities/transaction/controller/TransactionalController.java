@@ -5,13 +5,19 @@ import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/transactional")
@@ -67,6 +73,70 @@ public class TransactionalController {
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Buscar transacciones con filtros opcionales",
+            description = "Permite buscar transacciones aplicando filtros como nombre, tipo, referencia, fecha de creación y tenantId."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de transacciones paginada"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/search")
+    public ResponseEntity<PaginatedResponse<TransactionResponseDto>> searchTransactions(
+            @Parameter(description = "Tipo de transacción", in = ParameterIn.QUERY)
+            @RequestParam(required = false) String type,
+
+            @Parameter(description = "Referencia de la transacción", in = ParameterIn.QUERY)
+            @RequestParam(required = false) String reference,
+
+            @Parameter(description = "Fecha de inicio para el rango de creación (YYYY-MM-DD)", in = ParameterIn.QUERY)
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+
+            @Parameter(description = "Fecha final para el rango de creación (YYYY-MM-DD)", in = ParameterIn.QUERY)
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+
+            @Parameter(description = "ID del tenant", in = ParameterIn.QUERY)
+            @RequestParam(required = false) Long tenantId,
+
+            @Parameter(description = "ID del creador", in = ParameterIn.QUERY)
+            @RequestParam(required = false) Long createdById,
+
+            @Parameter(description = "ID del producto", in = ParameterIn.QUERY)
+            @RequestParam(required = false) Long productId,
+
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PaginatedResponse<TransactionResponseDto> response = transactionService.searchTransactions(
+                type, reference, startDate, endDate, tenantId, createdById,
+                productId, page, size
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Obtener transacciones dentro de un rango de fechas",
+            description = "Devuelve una lista paginada de transacciones creadas entre las fechas especificadas."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de transacciones paginada"),
+            @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/date-range")
+    public ResponseEntity<PaginatedResponse<TransactionResponseDto>> getAllTransactionsByCreatedAtRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        PaginatedResponse<TransactionResponseDto> response = transactionService.getAllTransactionsByCreatedAtRange(
+                startDate, endDate, page, size
+        );
+        return ResponseEntity.ok(response);
     }
 
 

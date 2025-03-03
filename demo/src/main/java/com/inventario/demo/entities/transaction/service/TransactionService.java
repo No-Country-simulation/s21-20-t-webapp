@@ -4,6 +4,7 @@ import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.ResourceNotFoundException;
 import com.inventario.demo.config.exceptions.TenantNotFoundException;
 import com.inventario.demo.config.exceptions.UserNotFoundException;
+import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.repository.TenantRepository;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
@@ -16,9 +17,12 @@ import com.inventario.demo.entities.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,4 +80,68 @@ public class TransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
         transactionRepository.delete(transaction);
     }
+
+    public PaginatedResponse<TransactionResponseDto> searchTransactions(
+            String type,
+            String reference,
+            LocalDate startDate,
+            LocalDate endDate,
+            Long tenantId,
+            Long createdById,
+            Long productId,
+            int page,
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Specification<TransactionModel> spec = Specification.where(null);
+
+
+        // Filtro por tipo de transacción
+        if (type != null && !type.trim().isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("type"), type));
+        }
+
+        // Filtro por referencia
+        if (reference != null && !reference.trim().isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("reference"), "%" + reference + "%"));
+        }
+
+        // Filtro por rango de fechas de creación
+        if (startDate != null && endDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.between(root.get("createdAt"), startDate, endDate));
+        }
+
+        // Filtro por tenant
+        if (tenantId != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("tenant").get("id"), tenantId));
+        }
+
+        // Filtro por creador
+        if (createdById != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("createdBy").get("id"), createdById));
+        }
+
+        // Filtro por producto
+        if (productId != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("product").get("id"), productId));
+        }
+
+        Page<TransactionModel> transactionPage = transactionRepository.findAll(spec, pageable);
+        List<TransactionResponseDto> transactionDtos = transactionPage.getContent().stream()
+                .map(transactionMapper::toDto)
+                .collect(Collectors.toList());
+        return new PaginatedResponse<>(transactionDtos, transactionPage.getTotalPages(), transactionPage.getTotalElements());
+    }
+
+    public PaginatedResponse<TransactionResponseDto> getAllTransactionsByCreatedAtRange(LocalDate startDate, LocalDate endDate, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<TransactionModel> transactionsPage = transactionRepository.findAllByCreatedAtBetween(startDate, endDate, pageable);
+
+        List<TransactionResponseDto> transactionsDtos = transactionsPage.getContent().stream()
+                .map(transactionMapper::toDto)
+                .collect(Collectors.toList());
+
+        return new PaginatedResponse<>(transactionsDtos, transactionsPage.getTotalPages(), transactionsPage.getTotalElements());
+    }
 }
+

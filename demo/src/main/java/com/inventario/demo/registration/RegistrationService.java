@@ -2,10 +2,10 @@ package com.inventario.demo.registration;
 
 import com.inventario.demo.entities.tenant.dtoRequest.TenantRequestDto;
 import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
+import com.inventario.demo.entities.tenant.service.TenantService;
 import com.inventario.demo.entities.user.dtoRequest.AuthCreateUserRequestDto;
 import com.inventario.demo.entities.user.dtoResponse.UserCreationResult;
 import com.inventario.demo.entities.user.service.impl.UserDetailsServiceImpl;
-import com.inventario.demo.tenant.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
