@@ -1,162 +1,124 @@
 import { Component, OnInit } from '@angular/core';
+import { CategoriaService } from '../../Services/categoria.service';
+import { AuthService } from '../../Services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CategoriaService } from '../../Services/categoria.service';
-import { CategoriaProducto, Producto, Inventario } from '../../../Models/Models';
-import { AuthService } from '../../Services/auth.service';
-import { ProductoService } from '../../Services/producto.service';
-import { InventarioService } from '../../Services/inventario.service';
+import { CategoriaProducto } from '../../../Models/Models';
+import { ProductComponent } from '../productos/productos.component';
 
 @Component({
-  selector: 'app-categorias',
+  selector: 'app-category',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ProductComponent],
   templateUrl: './categorias.component.html',
+  styleUrls: ['./categorias.component.css'],
 })
-export class CategoriasComponent implements OnInit {
-  categorias: CategoriaProducto[] = [];
-  nuevaCategoria: CategoriaProducto = {
-    id: 0, // Cambiado a number
-    tenantId: 0, // Cambiado a number
-    nombre: '',
-    camposPersonalizados: {},
-    creadoEn: new Date(),
-  };
-  errorMessage: string = '';
-
-  productos: Producto[] = [];
-  nuevoProducto: Producto = {
-    id: 0, // Cambiado a number
-    tenantId: 0, // Cambiado a number
-    categoriaId: 0, // Cambiado a number
+export class CategoryComponent implements OnInit {
+  categories: CategoriaProducto[] = [];
+  newCategory: CategoriaProducto = {
+    tenantId: 0,
+    categoriaId: 0,
     nombre: '',
     sku: '',
     camposPersonalizados: {},
-    stock: 0,
-    creadoEn: new Date(),
   };
-  productoSeleccionado: Producto | null = null;
-  inventario: Inventario[] = [];
-  inventarioSeleccionado: Inventario | null = null;
+  selectedCategory: CategoriaProducto | null = null;
+  isEditing = false;
+  showProductComponent = false;
+  selectedCategoryForProducts: CategoriaProducto | null = null;
+  editingCategory: CategoriaProducto | null = null;
 
   constructor(
     private categoriaService: CategoriaService,
-    private authService: AuthService,
-    private productoService: ProductoService,
-    private inventarioService: InventarioService
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.cargarCategorias();
+    this.loadCategories();
   }
 
-  cargarCategorias(): void {
-    this.authService.getUserProfile().subscribe((userProfile) => {
-      if (userProfile && userProfile.tenantId) {
-        this.categoriaService.getCategorias(userProfile.tenantId).subscribe({
-          next: (categorias) => (this.categorias = categorias),
-          error: (err) => (this.errorMessage = 'Error al cargar categorías'),
-        });
-        this.nuevaCategoria.tenantId = userProfile.tenantId;
-      }
-    });
-  }
+  
 
-  crearCategoria(): void {
-    this.categoriaService.crearCategoria(this.nuevaCategoria).subscribe({
-      next: (categoria) => {
-        this.categorias.push(categoria);
-        this.nuevaCategoria.nombre = '';
-      },
-      error: (err) => (this.errorMessage = 'Error al crear categoría'),
-    });
-  }
-
-  cargarProductos(categoriaId: number): void { // Cambiado a number
-    this.authService.getUserProfile().subscribe((userProfile) => {
-      if (userProfile && userProfile.tenantId) {
-        this.productoService
-          .getProductos(userProfile.tenantId, categoriaId)
-          .subscribe({
-            next: (productos) => (this.productos = productos),
-            error: (err) => (this.errorMessage = 'Error al cargar productos'),
-          });
-        this.nuevoProducto.tenantId = userProfile.tenantId;
-        this.nuevoProducto.categoriaId = categoriaId;
-      }
-    });
-  }
-
-  crearProducto(): void {
-    this.productoService.crearProducto(this.nuevoProducto).subscribe({
-      next: (producto) => {
-        this.productos.push(producto);
-        this.nuevoProducto.nombre = '';
-        this.nuevoProducto.sku = '';
-      },
-      error: (err) => (this.errorMessage = 'Error al crear producto'),
-    });
-  }
-
-  editarProducto(): void {
-    if (this.productoSeleccionado) {
-      this.productoService
-        .actualizarProducto(this.productoSeleccionado)
-        .subscribe({
-          next: () => {
-            this.productoSeleccionado = null;
-            if (this.nuevoProducto.categoriaId) {
-              this.cargarProductos(this.nuevoProducto.categoriaId);
+  loadCategories(): void {
+    this.authService.getUserProfile().subscribe(
+      (user) => {
+        if (user && user.tenantId) {
+          this.categoriaService.getCategories().subscribe((response) => { // Cambiado a response
+            if (response && response.content && Array.isArray(response.content)) { // Verificar si content existe y es un array
+              this.categories = response.content.filter(
+                (category) => category.tenantId === user.tenantId
+              );
+            } else {
+              console.error('La respuesta del backend no contiene un array de categorías válido');
             }
-          },
-          error: (err) => (this.errorMessage = 'Error al editar producto'),
-        });
-    }
-  }
-
-  eliminarProducto(productoId: number): void { // Cambiado a number
-    this.productoService.eliminarProducto(productoId).subscribe({
-      next: () => {
-        this.productos = this.productos.filter(
-          (producto) => producto.id !== productoId
-        );
-      },
-      error: (err) => (this.errorMessage = 'Error al eliminar producto'),
-    });
-  }
-
-  seleccionarProducto(producto: Producto): void {
-    this.productoSeleccionado = { ...producto };
-  }
-
-  cargarInventario(productoId: number): void { // Cambiado a number
-    this.authService.getUserProfile().subscribe((userProfile) => {
-      if (userProfile && userProfile.tenantId) {
-        this.inventarioService
-          .getInventario(userProfile.tenantId, productoId)
-          .subscribe({
-            next: (inventario) => (this.inventario = inventario),
-            error: (err) => (this.errorMessage = 'Error al cargar inventario'),
           });
+        } else {
+          console.error('tenantId no encontrado en el perfil del usuario');
+        }
+      },
+      (error) => {
+        console.error('Error obteniendo perfil del usuario:', error);
       }
-    });
+    );
   }
 
-  editarInventario(): void {
-    if (this.inventarioSeleccionado) {
-      this.inventarioService
-        .actualizarInventario(this.inventarioSeleccionado)
-        .subscribe({
-          next: () => {
-            this.inventarioSeleccionado = null;
-            this.cargarInventario(this.inventario[0].productoId);
-          },
-          error: (err) => (this.errorMessage = 'Error al editar inventario'),
-        });
+
+  createCategory(): void {
+    this.authService.getUserProfile().subscribe(
+      (user) => {
+        if (user && user.tenantId) {
+          this.newCategory.tenantId = user.tenantId; // Asegurarse de que el tenantId es correcto
+          this.categoriaService.createCategoriaProducto(this.newCategory).subscribe(() => {
+            this.loadCategories();
+            // Limpiar solo los campos necesarios, manteniendo tenantId
+            this.newCategory = {
+              tenantId: user.tenantId, // Mantener el tenantId del usuario
+              categoriaId: 0,
+              nombre: '',
+              sku: '',
+              camposPersonalizados: {},
+            };
+          });
+        } else {
+          console.error('tenantId no encontrado en el perfil del usuario');
+        }
+      },
+      (error) => {
+        console.error('Error obteniendo perfil del usuario:', error);
+      }
+    );
+  }
+
+  selectCategory(category: CategoriaProducto): void {
+    this.selectedCategory = { ...category };
+    this.isEditing = true;
+  }
+
+  updateCategory(): void {
+    if (this.selectedCategory && this.selectedCategory.id) {
+      this.categoriaService.updateCategoriaProducto(this.selectedCategory.id, this.selectedCategory).subscribe(() => {
+        this.loadCategories();
+        this.selectedCategory = null;
+        this.isEditing = false;
+      });
     }
   }
 
-  seleccionarInventarioItem(inventario: Inventario): void {
-    this.inventarioSeleccionado = { ...inventario };
+  deleteCategory(id: number): void {
+    this.categoriaService.deleteCategoriaProducto(id).subscribe(() => {
+      this.loadCategories();
+    });
   }
+
+  cancelEdit(): void {
+    this.selectedCategory = null;
+    this.isEditing = false;
+  }
+
+  showProducts(category: CategoriaProducto): void {
+    this.selectedCategoryForProducts = category;
+    this.showProductComponent = true;
+  }
+
+  
 }

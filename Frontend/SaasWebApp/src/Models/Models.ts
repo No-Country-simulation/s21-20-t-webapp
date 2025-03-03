@@ -8,37 +8,51 @@ export interface Tenant {
   
   export interface Usuario {
     id: number;
-    tenantId: number;
     email: string;
-    password: string;
-    rol?: string; // 'admin', 'manager', 'viewer', etc.
-    creadoEn?: Date;
-    ultimoLogin?: Date;
+    name: string;
+    lastName: string;
+    phoneNumber: number;
+    birthDate: string;
+    tenantId: number;
+    registerDate: string;
+    lastLogin: string;
   }
   
   export interface CategoriaProducto {
-    id: number;
+    id?: number;
     tenantId: number;
+    categoriaId: number;
     nombre: string;
-    camposPersonalizados: any; // JSONB para datos dinámicos
-    creadoEn?: Date;
-    actualizadoEn?: Date;
+    sku: string;
+    camposPersonalizados: { [key: string]: string };
+    creadoEn?: string;
+    actualizadoEn?: string;
   }
   export interface AuthResponse {
     token: string;
   }
   
   export interface Producto {
-    id: number;
+    id?: number; // Agregado y opcional
     tenantId: number;
-    categoriaId?: number;
+    categoriaId: number;
     nombre: string;
     sku: string;
-    camposPersonalizados: any; // JSONB para datos adicionales
-    stock: number;
-    creadoEn?: Date;
-    actualizadoEn?: Date;
+    camposPersonalizados: {
+    [key: string]: string;
+  };
+    stock?: number;
   }
+
+  export interface ProductoActualizar {
+    id: number;
+    tenantId: number;
+    categoriaId: number;
+    nombre: string;
+    sku: string;
+    camposPersonalizados: { [key: string]: string };
+  }
+  
   
   export interface Inventario {
     id: number;

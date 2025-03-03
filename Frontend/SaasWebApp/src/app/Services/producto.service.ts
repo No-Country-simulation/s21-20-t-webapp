@@ -1,51 +1,61 @@
-// src/app/Services/producto.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Producto } from '../../Models/Models'; // Asegúrate de que la ruta sea correcta
+import { Producto, ProductoActualizar } from '../../Models/Models'; // Asegúrate de la ruta correcta
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductoService {
-  private apiUrl = 'https://inventory-lrkf.onrender.com/product'; // Reemplaza con tu URL
+export class ProductService {
+  private apiUrl = 'https://inventory-lrkf.onrender.com/products';
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
+  getProducts(): Observable<{ content: Producto[]; totalPages: number; totalElements: number }> {
     const token = localStorage.getItem('token');
-    return new HttpHeaders({
+    const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
+    return this.http.get<{ content: Producto[]; totalPages: number; totalElements: number }>(this.apiUrl, { headers });
   }
 
-  getProductos(tenantId: number, categoriaId: number): Observable<Producto[]> {
-    return this.http.get<Producto[]>(`${this.apiUrl}/${tenantId}/${categoriaId}`, {
-      headers: this.getHeaders(),
+  getProductById(id: number): Observable<Producto> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
     });
+    return this.http.get<Producto>(`${this.apiUrl}/${id}`, { headers });
   }
 
-  crearProducto(producto: Producto): Observable<Producto> {
-    return this.http.post<Producto>(this.apiUrl, producto, {
-      headers: this.getHeaders(),
+  createProduct(product: Producto): Observable<Producto> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
     });
+    return this.http.post<Producto>(this.apiUrl, product, { headers });
   }
 
-  actualizarProducto(producto: Producto): Observable<Producto> {
-    return this.http.put<Producto>(`${this.apiUrl}/${producto.id}`, producto, {
-      headers: this.getHeaders(),
+  updateProduct(id: number, product: ProductoActualizar): Observable<ProductoActualizar> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
     });
+    return this.http.patch<ProductoActualizar>(`${this.apiUrl}/${id}`, product, { headers });
   }
 
-  eliminarProducto(productoId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${productoId}`, {
-      headers: this.getHeaders(),
+  deleteProduct(id: number): Observable<void> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
     });
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers });
   }
 
-
-  obtenerProductos(id: string): Observable<Producto[]> {
-    // Implementation to fetch products based on the provided id
-    return this.http.get<Producto[]>(`/api/productos/${id}`);
+  obtenerProductos(): Observable<Producto[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<Producto[]>(this.apiUrl, { headers });
   }
 }
