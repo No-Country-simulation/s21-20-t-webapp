@@ -64,8 +64,8 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente")
     @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     @PatchMapping("/{id}")
-    public ResponseEntity<ProductModel> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDto updatedProductDto) {
-        ProductModel updatedProduct = productService.editProduct(id, updatedProductDto);
+    public ResponseEntity<ResponseProductRequest> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDto updatedProductDto) {
+        ResponseProductRequest updatedProduct = productService.updateProduct(id, updatedProductDto);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 

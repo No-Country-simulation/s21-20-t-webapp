@@ -18,8 +18,4 @@ public class ProductMapper {
 
 
     public ResponseProductRequest toDto (ProductModel productModel) {return modelMapper.map(productModel, ResponseProductRequest.class);}
-
-    public void updateEntityFromDto(ProductRequestDto productRequestDto, ProductModel existingProduct) {
-        modelMapper.map(productRequestDto, existingProduct);
-    }
 }

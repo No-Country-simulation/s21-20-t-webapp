@@ -3,6 +3,7 @@ package com.inventario.demo.entities.productos.service;
 import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.config.exceptions.CategoryNotFoundException;
 import com.inventario.demo.config.exceptions.ProductNotFoundException;
+import com.inventario.demo.config.exceptions.ResourceNotFoundException;
 import com.inventario.demo.config.exceptions.TenantNotFoundException;
 import com.inventario.demo.entities.categorias_productos.model.CategoryModel;
 import com.inventario.demo.entities.categorias_productos.repository.CategoryRepository;
@@ -16,6 +17,9 @@ import com.inventario.demo.entities.productos.repository.ProductRepository;
 import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.repository.TenantRepository;
+import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
+import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
+import com.inventario.demo.entities.transaction.model.TransactionModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,28 +77,12 @@ public class ProductService {
 
     }
 
-
-    public ProductModel editProduct(Long id, ProductRequestDto dto){
-
-
-        ProductModel productModel = productMapper.toEntity(dto);
-
-        //TODO: Crear excepcion para este caso
-
-        CategoryModel categoryModel = categoryRepository.findById(dto.getCategoriaId()).orElseThrow(() -> new CategoryNotFoundException("Categoria no encontrado"));
-        TenantModel tenantModel = tenantRepository.findById(dto.getTenantId()).orElseThrow(() -> new TenantNotFoundException(( "Tenant no encontrado")));
-
-
-        return productRepository.findById(id).map(product -> {
-            product.setNombre(dto.getNombre());
-            product.setTenant(tenantModel);
-            product.setCategoria(categoryModel);
-            product.setSku(dto.getSku());
-            product.setCamposPersonalizados(dto.getCamposPersonalizados());
-            return productRepository.save(product);
-        }).orElseThrow(() -> new RuntimeException("No se puede editar el producto"));
-
-
+    public ResponseProductRequest updateProduct(Long id, ProductRequestDto productRequestDto) {
+        ProductModel existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product no encontrado con id: " + id));
+        productMapper.updateEntityFromDto(productRequestDto, existingProduct);
+        ProductModel updatedProduct = productRepository.save(existingProduct);
+        return productMapper.toDto(updatedProduct);
     }
 
     public void deleteProduct(Long id){
