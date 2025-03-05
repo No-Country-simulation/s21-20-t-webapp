@@ -1,6 +1,7 @@
 package com.inventario.demo.entities.categorias_productos.mapper;
 
 import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryRequestDto;
+import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryUpdateRequestDto;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.ResponseCategoryRequest;
 import com.inventario.demo.entities.categorias_productos.model.CategoryModel;
 import org.modelmapper.ModelMapper;
@@ -22,7 +23,7 @@ public class CategoryMapper {
         return modelMapper.map(categoryModel, ResponseCategoryRequest.class);
     }
 
-    public void updateEntityFromDto(CategoryRequestDto dto, CategoryModel entity) {
+    public void updateEntityFromDto(CategoryUpdateRequestDto dto, CategoryModel entity) {
         modelMapper.map(dto, entity);
     }
 }

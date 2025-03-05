@@ -2,6 +2,7 @@ package com.inventario.demo.entities.categorias_productos.controller;
 
 import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryRequestDto;
+import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryUpdateRequestDto;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.CategoryPageableResponse;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.ResponseCategoryRequest;
 import com.inventario.demo.entities.categorias_productos.service.CategoryService;
@@ -54,7 +55,7 @@ public class CategoryController {
     @Operation(summary = "Actualizar una categoría de producto")
     public ResponseEntity<ResponseCategoryRequest> updateCategory(
             @PathVariable Long id,
-            @Valid @RequestBody CategoryRequestDto requestDto) {
+            @Valid @RequestBody CategoryUpdateRequestDto requestDto) {
         return ResponseEntity.ok(categoryService.updateCategory(id, requestDto));
     }
 

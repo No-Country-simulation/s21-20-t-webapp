@@ -1,6 +1,7 @@
 package com.inventario.demo.entities.productos.mapper;
 
 import com.inventario.demo.entities.productos.dtoRequest.ProductRequestDto;
+import com.inventario.demo.entities.productos.dtoRequest.ProductUpdateRequestDto;
 import com.inventario.demo.entities.productos.dtoResponse.ResponseProductRequest;
 import com.inventario.demo.entities.productos.model.ProductModel;
 import org.modelmapper.ModelMapper;
@@ -19,7 +20,7 @@ public class ProductMapper {
 
     public ResponseProductRequest toDto (ProductModel productModel) {return modelMapper.map(productModel, ResponseProductRequest.class);}
 
-    public void updateEntityFromDto(ProductRequestDto productRequestDto, ProductModel existingProduct) {
+    public void updateEntityFromDto(ProductUpdateRequestDto productRequestDto, ProductModel existingProduct) {
         modelMapper.map(productRequestDto, existingProduct);
     }
 }

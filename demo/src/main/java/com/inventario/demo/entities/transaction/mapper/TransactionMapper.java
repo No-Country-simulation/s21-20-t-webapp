@@ -1,6 +1,7 @@
 package com.inventario.demo.entities.transaction.mapper;
 
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
+import com.inventario.demo.entities.transaction.dtoRequest.TransactionUpdateRequestDto;
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.model.TransactionModel;
 import org.modelmapper.ModelMapper;
@@ -24,7 +25,7 @@ public class TransactionMapper {
     }
 
 
-    public void updateEntityFromDto(TransactionRequestDto dto, TransactionModel entity) {
+    public void updateEntityFromDto(TransactionUpdateRequestDto dto, TransactionModel entity) {
         modelMapper.map(dto, entity);
     }
 }

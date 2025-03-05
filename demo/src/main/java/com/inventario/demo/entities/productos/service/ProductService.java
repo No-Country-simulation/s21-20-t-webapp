@@ -9,6 +9,7 @@ import com.inventario.demo.entities.categorias_productos.model.CategoryModel;
 import com.inventario.demo.entities.categorias_productos.repository.CategoryRepository;
 import com.inventario.demo.entities.categorias_productos.service.CategoryService;
 import com.inventario.demo.entities.productos.dtoRequest.ProductRequestDto;
+import com.inventario.demo.entities.productos.dtoRequest.ProductUpdateRequestDto;
 import com.inventario.demo.entities.productos.dtoResponse.ProductPageableResponse;
 import com.inventario.demo.entities.productos.dtoResponse.ResponseProductRequest;
 import com.inventario.demo.entities.productos.mapper.ProductMapper;
@@ -77,7 +78,7 @@ public class ProductService {
 
     }
 
-    public ResponseProductRequest updateProduct(Long id, ProductRequestDto productRequestDto) {
+    public ResponseProductRequest updateProduct(Long id, ProductUpdateRequestDto productRequestDto) {
         ProductModel existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product no encontrado con id: " + id));
         productMapper.updateEntityFromDto(productRequestDto, existingProduct);

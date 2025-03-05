@@ -2,6 +2,7 @@ package com.inventario.demo.entities.transaction.controller;
 
 import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
+import com.inventario.demo.entities.transaction.dtoRequest.TransactionUpdateRequestDto;
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,7 +62,7 @@ public class TransactionalController {
     @PatchMapping("/{id}")
     public ResponseEntity<TransactionResponseDto> updateTransaction(
             @PathVariable Long id,
-            @Valid @RequestBody TransactionRequestDto transactionRequestDto) {
+            @Valid @RequestBody TransactionUpdateRequestDto transactionRequestDto) {
         TransactionResponseDto updatedTransaction = transactionService.updateTransaction(id, transactionRequestDto);
         return ResponseEntity.ok(updatedTransaction);
     }

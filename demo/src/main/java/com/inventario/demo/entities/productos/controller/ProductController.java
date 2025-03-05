@@ -2,6 +2,7 @@ package com.inventario.demo.entities.productos.controller;
 
 import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.entities.productos.dtoRequest.ProductRequestDto;
+import com.inventario.demo.entities.productos.dtoRequest.ProductUpdateRequestDto;
 import com.inventario.demo.entities.productos.dtoResponse.ProductPageableResponse;
 import com.inventario.demo.entities.productos.dtoResponse.ResponseProductRequest;
 import com.inventario.demo.entities.productos.model.ProductModel;
@@ -64,7 +65,7 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente")
     @ApiResponse(responseCode = "404", description = "Producto no encontrado")
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseProductRequest> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDto updatedProductDto) {
+    public ResponseEntity<ResponseProductRequest> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductUpdateRequestDto updatedProductDto) {
         ResponseProductRequest updatedProduct = productService.updateProduct(id, updatedProductDto);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
@@ -91,7 +92,6 @@ public class ProductController {
      * @param startDate    Fecha de inicio para el rango de creación (YYYY-MM-DD) (opcional).
      * @param endDate      Fecha de fin para el rango de creación (YYYY-MM-DD) (opcional).
      * @param tenantId     Identificador del tenant (opcional).
-     * @param createdBy    Identificador del usuario creador (opcional).
      * @param categoryId   Identificador de la categoría (opcional).
      * @param page         Número de página para paginación (por defecto 0).
      * @param size         Tamaño de página para paginación (por defecto 10).

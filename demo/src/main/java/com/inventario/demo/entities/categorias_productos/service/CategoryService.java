@@ -5,6 +5,7 @@ import com.inventario.demo.config.exceptions.CategoryNotFoundException;
 import com.inventario.demo.config.exceptions.ProductNotFoundException;
 import com.inventario.demo.config.exceptions.TenantNotFoundException;
 import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryRequestDto;
+import com.inventario.demo.entities.categorias_productos.dtoRequest.CategoryUpdateRequestDto;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.ResponseCategoryRequest;
 import com.inventario.demo.entities.categorias_productos.dtoResponse.CategoryPageableResponse;
 import com.inventario.demo.entities.categorias_productos.mapper.CategoryMapper;
@@ -60,7 +61,7 @@ public class CategoryService {
         return new PaginatedResponse<>(dtos, categories.getTotalPages(), categories.getTotalElements());
     }
 
-    public ResponseCategoryRequest updateCategory(Long id, CategoryRequestDto requestDto) {
+    public ResponseCategoryRequest updateCategory(Long id, CategoryUpdateRequestDto requestDto) {
         CategoryModel category = categoryRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Categoria no encontrada"));
         categoryMapper.updateEntityFromDto(requestDto, category);
         CategoryModel updatedCategory = categoryRepository.save(category);

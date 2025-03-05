@@ -8,6 +8,7 @@ import com.inventario.demo.entities.tenant.repository.TenantRepository;
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.model.TransactionModel;
 import com.inventario.demo.inventory.dtoRequest.InventoryRequestDto;
+import com.inventario.demo.inventory.dtoRequest.InventoryUpdateRequestDto;
 import com.inventario.demo.inventory.dtoResponse.InventoryResponseDto;
 import com.inventario.demo.inventory.mapper.InventoryMapper;
 import com.inventario.demo.inventory.model.InventoryModel;
@@ -57,7 +58,7 @@ public class InventoryService {
         return inventoryMapper.toDto(savedInventory);
     }
 
-    public InventoryResponseDto updateInventory(Long id, InventoryRequestDto inventoryRequestDto) {
+    public InventoryResponseDto updateInventory(Long id, InventoryUpdateRequestDto inventoryRequestDto) {
         InventoryModel existingInventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new InventoryNotFoundException("El inventario no fue encontrado con id: " + id));
         inventoryMapper.updateEntityFromDto(inventoryRequestDto, existingInventory);

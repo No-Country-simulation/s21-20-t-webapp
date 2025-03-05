@@ -2,6 +2,7 @@ package com.inventario.demo.inventory.controller;
 
 import com.inventario.demo.config.PaginatedResponse;
 import com.inventario.demo.inventory.dtoRequest.InventoryRequestDto;
+import com.inventario.demo.inventory.dtoRequest.InventoryUpdateRequestDto;
 import com.inventario.demo.inventory.dtoResponse.InventoryResponseDto;
 import com.inventario.demo.inventory.service.InventoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -63,7 +64,7 @@ public class InventoryController {
     @PatchMapping("/{id}")
     public ResponseEntity<InventoryResponseDto> updateInventory(
             @PathVariable Long id,
-            @Valid @RequestBody InventoryRequestDto inventoryRequestDto) {
+            @Valid @RequestBody InventoryUpdateRequestDto inventoryRequestDto) {
 
         InventoryResponseDto inventory = inventoryService.updateInventory(id, inventoryRequestDto);
         return ResponseEntity.ok(inventory);

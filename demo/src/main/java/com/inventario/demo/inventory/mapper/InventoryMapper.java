@@ -1,6 +1,7 @@
 package com.inventario.demo.inventory.mapper;
 
 import com.inventario.demo.inventory.dtoRequest.InventoryRequestDto;
+import com.inventario.demo.inventory.dtoRequest.InventoryUpdateRequestDto;
 import com.inventario.demo.inventory.dtoResponse.InventoryResponseDto;
 import com.inventario.demo.inventory.model.InventoryModel;
 import org.modelmapper.ModelMapper;
@@ -23,7 +24,7 @@ public class InventoryMapper {
         return modelMapper.map(dto, InventoryModel.class);
     }
 
-    public void updateEntityFromDto(InventoryRequestDto dto, InventoryModel entity) {
+    public void updateEntityFromDto(InventoryUpdateRequestDto dto, InventoryModel entity) {
         modelMapper.map(dto, entity);
     }
 }

@@ -28,7 +28,7 @@ public class TransactionModel {
     private TenantModel tenant;
 
     @ManyToOne(targetEntity = ProductModel.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "producto_id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private ProductModel product;
 
     @Column(name = "quantity", nullable = false)

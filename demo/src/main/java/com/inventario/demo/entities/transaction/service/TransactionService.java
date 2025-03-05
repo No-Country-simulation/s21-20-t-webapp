@@ -8,6 +8,7 @@ import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.repository.TenantRepository;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
+import com.inventario.demo.entities.transaction.dtoRequest.TransactionUpdateRequestDto;
 import com.inventario.demo.entities.transaction.dtoResponse.TransactionResponseDto;
 import com.inventario.demo.entities.transaction.mapper.TransactionMapper;
 import com.inventario.demo.entities.transaction.model.TransactionModel;
@@ -67,7 +68,7 @@ public class TransactionService {
         return transactionMapper.toDto(savedTransaction);
     }
 
-    public TransactionResponseDto updateTransaction(Long id, TransactionRequestDto transactionRequestDto) {
+    public TransactionResponseDto updateTransaction(Long id, TransactionUpdateRequestDto transactionRequestDto) {
         TransactionModel existingTransaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + id));
         transactionMapper.updateEntityFromDto(transactionRequestDto, existingTransaction);
