@@ -84,9 +84,9 @@ public class InventoryService {
         Specification<InventoryModel> spec = Specification.where(null);
 
 
-        // Filtro por locación
+        // Filtro por locación (búsqueda insensible a mayúsculas)
         if (location != null && !location.trim().isEmpty()) {
-            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("location"), location));
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
         }
 
 
