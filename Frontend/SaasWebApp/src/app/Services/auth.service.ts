@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private apiUrl = 'https://inventory-lrkf.onrender.com';
-  private isAuthenticated = false;
+  private loginStatus$ = new BehaviorSubject<boolean>(this.isLoggedIn());
+  private userProfile$ = new BehaviorSubject<any>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -17,17 +18,15 @@ export class AuthService {
       .post<any>(`${this.apiUrl}/auth/login`, { email, password }, { observe: 'response' })
       .pipe(
         tap((response: HttpResponse<any>) => {
-          console.log('Respuesta del login:', response);
           if (response.body && response.body.token && response.body.id) {
             localStorage.setItem('token', response.body.token);
-            localStorage.setItem('userId', response.body.id.toString()); // Convertir el id a string
-            console.log('Token almacenado:', response.body.token);
-            console.log('UserId almacenado:', response.body.id);
+            localStorage.setItem('userId', response.body.id.toString());
+            this.loginStatus$.next(true);
+            this.getUserProfile().subscribe((user) => this.userProfile$.next(user));
           }
         })
       );
   }
-
 
   register(
     companyName: string,
@@ -45,7 +44,6 @@ export class AuthService {
       throw new Error('El número de teléfono no es válido');
     }
 
-    // Convertir la fecha a formato YYYY-MM-DD si es necesario
     const date = new Date(birthDate);
     const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
 
@@ -54,8 +52,8 @@ export class AuthService {
         name: companyName,
         configuration: {
           key1: 'value1',
-          key2: 'value2'
-        }
+          key2: 'value2',
+        },
       },
       user: {
         name,
@@ -66,19 +64,19 @@ export class AuthService {
         country,
         birthDate: formattedDate,
         roleDto: {
-          "roles": [
-        "USER"  
-      ] 
-        }
-      }
+          roles: ['USER'],
+        },
+      },
     };
-    
+
     return this.http.post(`${this.apiUrl}/registration`, userData);
   }
 
   logout(): void {
     localStorage.removeItem('token');
-    this.isAuthenticated = false;
+    localStorage.removeItem('userId');
+    this.loginStatus$.next(false);
+    this.userProfile$.next(null);
   }
 
   isLoggedIn(): boolean {
@@ -95,7 +93,7 @@ export class AuthService {
       Authorization: `Bearer ${token}`,
     });
 
-    const url = `${this.apiUrl}/user/${userId}`; // URL CORRECTA
+    const url = `${this.apiUrl}/user/${userId}`;
 
     return this.http.get<any>(url, { headers }).pipe(
       catchError((error) => {
@@ -104,20 +102,23 @@ export class AuthService {
       })
     );
   }
+
+  getLoginStatus(): Observable<boolean> {
+    return this.loginStatus$.asObservable();
+  }
+
+  getUserProfile$(): Observable<any> {
+    return this.userProfile$.asObservable();
+  }
+
   private decodeToken(token: string): any {
     try {
-      const decoded = JSON.parse(atob(token.split('.')[1])); // Decodifica el payload del JWT
-      console.log("Decoded Token:", decoded); // <-- Revisa si tiene el 'id'
-      return decoded;
+      return JSON.parse(atob(token.split('.')[1]));
     } catch (e) {
-      console.error("Error decodificando token:", e);
       return null;
     }
   }
-  
-  
-  
-  // Función para obtener el email desde el token JWT
+
   private getEmailFromToken(token: string): string | null {
     try {
       const decoded = JSON.parse(atob(token.split('.')[1]));
@@ -125,4 +126,5 @@ export class AuthService {
     } catch (e) {
       return null;
     }
-  }}
+  }
+}

@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../Services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -10,36 +11,35 @@ import { CommonModule } from '@angular/common';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   name = '';
+  private loginSubscription!: Subscription;
+  private userProfileSubscription!: Subscription;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
-    this.checkLoginStatus();
-  }
+    this.loginSubscription = this.authService.getLoginStatus().subscribe(
+      (isLoggedIn) => {
+        this.isLoggedIn = isLoggedIn;
+      }
+    );
 
-  checkLoginStatus() {
-    this.isLoggedIn = this.authService.isLoggedIn();
-    if (this.isLoggedIn) {
-      this.authService.getUserProfile().subscribe(
-        (user) => {
-          console.log("respuesta del getUserProfile", user);
-          if (user && user.name && user.lastName) {
-            this.name = `${user.name} ${user.lastName}`;
-          } else {
-            this.name = 'Usuario';
-          }
-        },
-        (error) => {
-          console.error('Error obteniendo perfil:', error);
+    this.userProfileSubscription = this.authService.getUserProfile$().subscribe(
+      (user) => {
+        if (user && user.name && user.lastName) {
+          this.name = `${user.name} ${user.lastName}`;
+        } else {
           this.name = 'Usuario';
         }
-      );
-    } else {
-      this.name = '';
-    }
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    this.loginSubscription.unsubscribe();
+    this.userProfileSubscription.unsubscribe();
   }
 
   login(): void {
@@ -52,15 +52,8 @@ export class NavbarComponent {
 
   logout(): void {
     this.authService.logout();
-    this.checkLoginStatus();
     this.router.navigate(['/login']);
   }
 
-  private decodeToken(token: string): any {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
-  }
+  
 }
