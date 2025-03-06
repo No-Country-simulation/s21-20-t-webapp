@@ -61,14 +61,26 @@ export class InventoryComponent implements OnInit {
   }
 
   loadProductos(): void {
-    this.productService.getProducts().subscribe({
-      next: (productos) => {
-        this.productos = productos.content;
+    this.authService.getUserProfile().subscribe(
+      (user) => {
+        if (user && user.tenantId) {
+          this.productService.getProducts().subscribe((response) => { // Cambiado a response
+            if (response && response.content && Array.isArray(response.content)) { // Verificar si content existe y es un array
+              this.productos = response.content.filter(
+                (producto) => producto.tenantId === user.tenantId
+              );
+            } else {
+              console.error('La respuesta del backend no contiene un array de productos válido');
+            }
+          });
+        } else {
+          console.error('tenantId no encontrado en el perfil del usuario');
+        }
       },
-      error: (err) => {
-        this.error = 'Error al cargar productos: ' + err.message;
+      (error) => {
+        console.error('Error obteniendo perfil del usuario:', error);
       }
-    });
+    );
   }
 
   loadCategorias(): void {
@@ -168,10 +180,6 @@ export class InventoryComponent implements OnInit {
         if (user && user.tenantId) {
           this.searchParams.tenantId = user.tenantId;
           
-
-          console.log('TenantId:', this.searchParams.tenantId);
-          
-
           this.inventoryService.searchInventories(this.searchParams).subscribe({
             next: (response) => {
               console.log('Search Response:', response);
