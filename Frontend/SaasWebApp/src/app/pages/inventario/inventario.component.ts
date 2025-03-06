@@ -1,60 +1,203 @@
-// src/app/dashboard/inventario/inventario.component.ts
-import { Component, OnInit, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Inventory, InventoryResponse, InventorySearch } from '../../../Models/Models';
+import { InventoryService } from '../../Services/inventario.service';
+import { AuthService } from '../../Services/auth.service';
+import { ProductService } from '../../Services/producto.service';
+import { CategoriaService } from '../../Services/categoria.service';
+import { Producto, CategoriaProducto } from '../../../Models/Models';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { InventarioService } from '../../Services/inventario.service';
-import { Inventario } from '../../../Models/Models';
-import { AuthService } from '../../Services/auth.service';
 
 @Component({
   selector: 'app-inventario',
-  standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './inventario.component.html',
+  styleUrls: ['./inventario.component.css']
 })
-export class InventarioComponent implements OnInit {
-  @Input() productoId: number = 0; // Recibe el ID del producto desde el componente padre
-  inventario: Inventario[] = [];
-  inventarioSeleccionado: Inventario | null = null;
-  errorMessage: string = '';
+export class InventoryComponent implements OnInit {
+  inventories: Inventory[] = [];
+  newInventory: Inventory = { id: 0, productId: 0, tenantId: 0, quantity: 0, location: '' };
+  selectedInventory: Inventory | null = null;
+  isEditing = false;
+  searchParams: InventorySearch = {};
+  totalPages = 0;
+  totalElements = 0;
+  currentPage = 0;
+  pageSize = 10;
+  loading = false;
+  error: string | null = null;
+  success: string | null = null;
+  productos: Producto[] = [];
+  categorias: CategoriaProducto[] = [];
 
   constructor(
-    private inventarioService: InventarioService,
-    private authService: AuthService
-  ) {}
+    private inventoryService: InventoryService,
+    private authService: AuthService,
+    private productService: ProductService,
+    private categoriaService: CategoriaService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
-    this.cargarInventario();
+    this.loadInventories();
+    this.loadProductos();
+    this.loadCategorias();
   }
 
-  cargarInventario(): void {
-    this.authService.getUserProfile().subscribe((userProfile) => {
-      if (userProfile && userProfile.tenantId) {
-        this.inventarioService
-          .getInventario(userProfile.tenantId, this.productoId)
-          .subscribe({
-            next: (inventario) => (this.inventario = inventario),
-            error: (err) => (this.errorMessage = 'Error al cargar inventario'),
-          });
+  loadInventories(): void {
+    this.loading = true;
+    this.inventoryService.getInventories(this.currentPage, this.pageSize).subscribe({
+      next: (response: InventoryResponse) => {
+        this.inventories = response.content;
+        this.totalPages = response.totalPages;
+        this.totalElements = response.totalElements;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar inventarios: ' + err.message;
+        this.loading = false;
       }
     });
   }
 
-  editarInventario(): void {
-    if (this.inventarioSeleccionado) {
-      this.inventarioService
-        .actualizarInventario(this.inventarioSeleccionado)
-        .subscribe({
-          next: () => {
-            this.inventarioSeleccionado = null;
-            this.cargarInventario(); // Recargar el inventario después de la actualización
-          },
-          error: (err) => (this.errorMessage = 'Error al editar inventario'),
-        });
+  loadProductos(): void {
+    this.productService.getProducts().subscribe({
+      next: (productos) => {
+        this.productos = productos.content;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar productos: ' + err.message;
+      }
+    });
+  }
+
+  loadCategorias(): void {
+    this.categoriaService.getCategories().subscribe({
+      next: (categorias) => {
+        this.categorias = categorias.content;
+      },
+      error: (err) => {
+        this.error = 'Error al cargar categorías: ' + err.message;
+      }
+    });
+  }
+
+  createInventory(): void {
+    this.loading = true;
+    this.authService.getUserProfile().subscribe({
+      next: (user) => {
+        if (user && user.tenantId) {
+          this.newInventory.tenantId = user.tenantId;
+          this.inventoryService.createInventory(this.newInventory).subscribe({
+            next: (inventory) => {
+              this.inventories.push(inventory);
+              this.newInventory = { id: 0, productId: 0, tenantId: 0, quantity: 0, location: '' };
+              this.success = 'Inventario creado exitosamente.';
+              this.loading = false;
+            },
+            error: (err) => {
+              this.error = 'Error al crear inventario: ' + err.message;
+              this.loading = false;
+            }
+          });
+        } else {
+          this.error = 'Error al obtener perfil del usuario.';
+          this.loading = false;
+        }
+      },
+      error: (err) => {
+        this.error = 'Error al obtener perfil del usuario: ' + err.message;
+        this.loading = false;
+      }
+    });
+  }
+
+  selectInventory(inventory: Inventory): void {
+    this.selectedInventory = { ...inventory };
+    this.isEditing = true;
+  }
+
+  updateInventory(): void {
+    if (this.selectedInventory) {
+      this.loading = true;
+      this.inventoryService.updateInventory(this.selectedInventory.id, this.selectedInventory).subscribe({
+        next: (inventory) => {
+          const index = this.inventories.findIndex(i => i.id === inventory.id);
+          if (index !== -1) {
+            this.inventories[index] = inventory;
+          }
+          this.selectedInventory = null;
+          this.isEditing = false;
+          this.success = 'Inventario actualizado exitosamente.';
+          this.loading = false;
+        },
+        error: (err) => {
+          this.error = 'Error al actualizar inventario: ' + err.message;
+          this.loading = false;
+        }
+      });
     }
   }
 
-  seleccionarInventario(inventario: Inventario): void {
-    this.inventarioSeleccionado = { ...inventario };
+  deleteInventory(id: number): void {
+    this.loading = true;
+    this.inventoryService.deleteInventory(id).subscribe({
+      next: () => {
+        this.inventories = this.inventories.filter(i => i.id !== id);
+        this.success = 'Inventario eliminado exitosamente.';
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Error al eliminar inventario: ' + err.message;
+        this.loading = false;
+      }
+    });
   }
+
+  cancelEdit(): void {
+    this.selectedInventory = null;
+    this.isEditing = false;
+  }
+
+  searchInventories(): void {
+    this.loading = true;
+    this.error = null;
+    this.success = null;
+    this.authService.getUserProfile().subscribe({
+      next: (user) => {
+        if (user && user.tenantId) {
+          this.searchParams.tenantId = user.tenantId;
+          
+
+          console.log('TenantId:', this.searchParams.tenantId);
+          
+
+          this.inventoryService.searchInventories(this.searchParams).subscribe({
+            next: (response) => {
+              console.log('Search Response:', response);
+              this.inventories = response.content;
+              this.totalPages = response.totalPages;
+              this.totalElements = response.totalElements;
+              this.loading = false;
+              console.log('Inventories:', this.inventories);
+              this.cdr.detectChanges();
+            },
+            error: (err) => {
+              this.error = 'Error al buscar inventarios: ' + err.message;
+              this.loading = false;
+            },
+          });
+        } else {
+          this.error = 'Error al obtener perfil del usuario.';
+          this.loading = false;
+        }
+      },
+      error: (err) => {
+        this.error = 'Error al obtener perfil del usuario: ' + err.message;
+        this.loading = false;
+      },
+    });
+  }
+
+  
 }

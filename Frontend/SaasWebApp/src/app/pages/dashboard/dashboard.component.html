@@ -6,44 +6,64 @@
   <div *ngIf="error" class="text-red-500 mb-4">{{ error }}</div>
 
   <div *ngIf="!loading && !error && userProfile">
-    <div class="mb-4">
-      <h3 class="text-lg font-semibold mb-2">Bienvenido, {{ userProfile.name }} {{ userProfile.lastName }}</h3>
-      <p>Email: {{ userProfile.email }}</p>
-      <p>Teléfono: {{ userProfile.phoneNumber }}</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white shadow rounded p-4">
-        <h3 class="text-lg font-semibold mb-2">Total de Productos</h3>
-        <p class="text-3xl font-bold">{{ totalProductos }}</p>
+      <div class="mb-4">
+          <h3 class="text-lg font-semibold mb-2">Bienvenido, {{ userProfile.name }} {{ userProfile.lastName }}</h3>
+          <p>Email: {{ userProfile.email }}</p>
+          <p>Teléfono: {{ userProfile.phoneNumber }}</p>
       </div>
 
-      <div class="bg-white shadow rounded p-4">
-        <h3 class="text-lg font-semibold mb-2">Total de Stock</h3>
-        <p class="text-3xl font-bold">{{ totalStock }}</p>
-      </div>
-    </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white shadow rounded p-4">
+              <h3 class="text-lg font-semibold mb-2">Total de Productos</h3>
+              <p class="text-3xl font-bold">{{ totalProductos }}</p>
+          </div>
 
-    <div class="mt-4">
-      <h3 class="text-lg font-semibold mb-2">Categorías</h3>
-      <table class="w-full border-collapse">
-        <thead>
-          <tr class="bg-gray-200">
-            <th class="p-2 border">Nombre</th>
-            <th class="p-2 border">Productos</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let category of categories" class="border-b">
-            <td class="p-2 border">{{ category.nombre }}</td>
-            <td class="p-2 border">
-              <ul class="list-disc list-inside">
-                <li *ngFor="let product of (category.id ? filteredProducts[category.id] : [])">{{ product.nombre }}</li>
-              </ul>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+          <div class="bg-white shadow rounded p-4">
+              <h3 class="text-lg font-semibold mb-2">Total de Stock</h3>
+              <p class="text-3xl font-bold">{{ totalStock }}</p>
+          </div>
+      </div>
+
+      <div class="mt-4">
+          <h3 class="text-lg font-semibold mb-2">Categorías y Productos</h3>
+          <div *ngFor="let category of categories" class="mb-4">
+              <h4 class="text-md font-semibold mb-2">{{ category.nombre }}</h4>
+              <table class="w-full border-collapse">
+                  <thead>
+                      <tr class="bg-gray-200">
+                          <th class="p-2 border">Nombre</th>
+                          <th class="p-2 border">SKU</th>
+                          <th class="p-2 border">Cantidad</th>
+                          <th class="p-2 border">Acciones</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let product of filteredProducts[category.id!]" class="border-b">
+                          <td class="p-2 border">{{ product.nombre }}</td>
+                          <td class="p-2 border">{{ product.sku }}</td>
+                          <td class="p-2 border">
+                              <span *ngIf="editingProductId !== product.id">{{ product.stock }}</span>
+                              <span *ngIf="editingProductId === product.id">
+                                  <input type="number" [(ngModel)]="editedStock" class="border p-1 mr-2" />
+                              </span>
+                          </td>
+                          <td class="p-2 border">
+                              <span *ngIf="editingProductId !== product.id">
+                                  <button (click)="editStock(product.id!, product.stock!)"
+                                      class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Editar
+                                      Stock</button>
+                              </span>
+                              <span *ngIf="editingProductId === product.id">
+                                  <button (click)="saveStock(product)"
+                                      class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Guardar</button>
+                                  <button (click)="cancelEdit()"
+                                      class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded ml-2">Cancelar</button>
+                              </span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
   </div>
 </div>

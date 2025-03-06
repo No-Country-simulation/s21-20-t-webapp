@@ -1,11 +1,11 @@
 <nav class="bg-gray-800 text-white p-4 flex justify-between">
   <a class="text-xl font-bold" routerLink="/">Inventario</a>
   <div class="flex items-center">
-    <a class="px-4" routerLink="/productos">Productos</a>
-    <a class="px-4" routerLink="/categorias">Categorías</a>
-    <a class="px-4" routerLink="/dashboard">Dashboard</a>
-    <ng-container *ngIf="isLoggedIn; else authButtons">
-      <span class="px-4">Bienvenido, {{ name }}</span>
+    <ng-container *ngIf="isLoggedIn">
+      <a class="px-4" routerLink="/productos">Productos</a>
+      <a class="px-4" routerLink="/categorias">Categorías</a>
+      <a class="px-4" routerLink="/dashboard">Dashboard</a>
+      <a class="px-4" routerLink="/inventario">Inventario</a> <span class="px-4">Bienvenido, {{ name }}</span>
       <button (click)="logout()" class="bg-red-500 px-3 py-1 rounded">Cerrar Sesión</button>
     </ng-container>
 
@@ -13,5 +13,7 @@
       <a class="px-4 bg-blue-500 px-3 py-1 rounded" routerLink="/login">Login</a>
       <a class="px-4 bg-green-500 px-3 py-1 rounded" routerLink="/register">Register</a>
     </ng-template>
+
+    <ng-container *ngIf="!isLoggedIn" [ngTemplateOutlet]="authButtons"></ng-container>
   </div>
 </nav>

@@ -54,14 +54,26 @@ export interface Tenant {
   }
   
   
-  export interface Inventario {
+  export interface Inventory {
     id: number;
-    productoId: number;
+    productId: number;
     tenantId: number;
-    cantidad: number;
-    ubicacion?: string;
-    creadoEn?: Date;
-    actualizadoEn?: Date;
+    quantity: number;
+    location: string;
+  }
+  
+  export interface InventoryResponse {
+    content: Inventory[];
+    totalPages: number;
+    totalElements: number;
+  }
+  
+  export interface InventorySearch {
+    id?: number;
+    location?: string;                          
+    tenantId?: number;
+    productId?: number;
+    quantity?: number;
   }
   
   export interface Transaccion {
