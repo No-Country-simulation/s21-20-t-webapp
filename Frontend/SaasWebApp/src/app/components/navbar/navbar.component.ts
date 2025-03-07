@@ -3,6 +3,7 @@ import { AuthService } from '../../Services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { Usuario, Tenant } from '../../../Models/Models';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +15,7 @@ import { Subscription } from 'rxjs';
 export class NavbarComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   name = '';
+  tenantName: string = '';
   private loginSubscription!: Subscription;
   private userProfileSubscription!: Subscription;
 
@@ -30,6 +32,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       (user) => {
         if (user && user.name && user.lastName) {
           this.name = `${user.name} ${user.lastName}`;
+          this.getTenantName(user);
         } else {
           this.name = 'Usuario';
         }
@@ -53,6 +56,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+  private getTenantName(user: Usuario) {
+    if (user.tenantId) {
+      this.authService.getTenantById(user.tenantId).subscribe(
+        (tenant: Tenant) => {
+          this.tenantName = tenant.name;
+        },
+        (error) => {
+          console.error('Error al obtener el Tenant:', error);
+          this.tenantName = 'Tenant no encontrado'; // Manejar el error
+        }
+      );
+    } else {
+      this.tenantName = 'Tenant no asignado'; // Manejar el caso en que tenantId no esté presente
+    }
   }
 
   

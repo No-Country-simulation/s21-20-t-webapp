@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Tenant } from '../../Models/Models';
 
 @Injectable({
   providedIn: 'root',
@@ -126,5 +127,9 @@ export class AuthService {
     } catch (e) {
       return null;
     }
+  }
+
+  getTenantById(id: number): Observable<Tenant> {
+    return this.http.get<Tenant>(`${this.apiUrl}/tenant/${id}`);
   }
 }

@@ -1,9 +1,9 @@
 export interface Tenant {
     id: number;
-    nombre: string;
-    configuracion: any; // JSONB puede ser cualquier estructura
-    creadoEn?: Date;
-    actualizadoEn?: Date;
+    name: string;
+    configuration: any; // JSONB puede ser cualquier estructura
+    createdAt?: Date;
+    updateAt?: Date;
   }
   
   export interface Usuario {
