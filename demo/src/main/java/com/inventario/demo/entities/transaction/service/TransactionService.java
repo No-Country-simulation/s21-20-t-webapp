@@ -1,10 +1,9 @@
 package com.inventario.demo.entities.transaction.service;
 
 import com.inventario.demo.config.PaginatedResponse;
-import com.inventario.demo.config.exceptions.ResourceNotFoundException;
-import com.inventario.demo.config.exceptions.TenantNotFoundException;
-import com.inventario.demo.config.exceptions.UserNotFoundException;
-import com.inventario.demo.entities.tenant.dtoResponse.TenantResponseDto;
+import com.inventario.demo.config.exceptions.*;
+import com.inventario.demo.entities.productos.model.ProductModel;
+import com.inventario.demo.entities.productos.repository.ProductRepository;
 import com.inventario.demo.entities.tenant.model.TenantModel;
 import com.inventario.demo.entities.tenant.repository.TenantRepository;
 import com.inventario.demo.entities.transaction.dtoRequest.TransactionRequestDto;
@@ -15,6 +14,8 @@ import com.inventario.demo.entities.transaction.model.TransactionModel;
 import com.inventario.demo.entities.transaction.respository.TransactionRepository;
 import com.inventario.demo.entities.user.model.UserModel;
 import com.inventario.demo.entities.user.repository.UserRepository;
+import com.inventario.demo.inventory.model.InventoryModel;
+import com.inventario.demo.inventory.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,8 @@ public class TransactionService {
     private final TransactionMapper transactionMapper;
     private final TenantRepository tenantRepository;
     private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+    private final InventoryRepository inventoryRepository;
 
     public PaginatedResponse<TransactionResponseDto> getAllTransactions(int page, int size) {
         Page<TransactionModel> transactionPage = transactionRepository.findAll(PageRequest.of(page, size));
@@ -57,14 +60,42 @@ public class TransactionService {
         UserModel user = userRepository.findById(dto.getCreatedById())
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
+        ProductModel product = productRepository.findById(dto.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado"));
+
+        InventoryModel inventory = inventoryRepository.findByProductIdAndTenantId(dto.getProductId(), dto.getTenantId())
+                .orElseThrow(() -> new InventoryNotFoundException("Inventario no encontrado"));
+
         // Se mapean los campos simples del DTO a la entidad
         TransactionModel transaction = transactionMapper.toEntity(dto);
 
         // Se asignan las asociaciones con las entidades gestionadas
         transaction.setTenant(tenant);
         transaction.setCreatedBy(user);
+        transaction.setProduct(product);
 
         TransactionModel savedTransaction = transactionRepository.save(transaction);
+
+        // 🔹 Validar y actualizar inventario según el tipo de transacción
+        String type = dto.getType().toUpperCase(); // Normaliza el tipo a mayúsculas
+        switch (type) {
+            case "ENTRADA":
+                inventory.setQuantity(inventory.getQuantity() + dto.getQuantity());
+                break;
+            case "SALIDA":
+                if (inventory.getQuantity() < dto.getQuantity()) {
+                    throw new InsufficientStockException("No hay suficiente stock disponible");
+                }
+                inventory.setQuantity(inventory.getQuantity() - dto.getQuantity());
+                break;
+            case "AJUSTE":
+                inventory.setQuantity(dto.getQuantity());
+                break;
+            default:
+                throw new IllegalArgumentException("Tipo de transacción no válido: " + dto.getType());
+        }
+
+        inventoryRepository.save(inventory);
         return transactionMapper.toDto(savedTransaction);
     }
 

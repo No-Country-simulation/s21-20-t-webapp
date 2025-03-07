@@ -47,8 +47,25 @@ public class TransactionalController {
         return ResponseEntity.ok(transaction);
     }
 
-    @Operation(summary = "Crear una transacción", description = "Crea una nueva transacción")
+    @Operation(
+            summary = "Crear una transacción",
+            description = """
+        Crea una nueva transacción en el sistema.
+
+        Condiciones para crear una transacción:
+        - Debe existir un inventario que:
+          - Corresponda al productId de la transacción.
+          - Pertenezca al tenantId de la transacción.
+
+        Tipos de transacción válidos:
+        - ENTRADA: Aumenta la cantidad del producto en el inventario.
+        - SALIDA: Reduce la cantidad del producto en el inventario (no puede quedar en negativo).
+        - AJUSTE: Modifica la cantidad directamente al valor especificado.
+    """
+    )
     @ApiResponse(responseCode = "201", description = "Transacción creada exitosamente")
+    @ApiResponse(responseCode = "400", description = "Datos inválidos o tipo de transacción no permitido")
+    @ApiResponse(responseCode = "404", description = "Inventario, producto o usuario no encontrado")
     @PostMapping
     public ResponseEntity<TransactionResponseDto> createTransaction(
             @Valid @RequestBody TransactionRequestDto transactionRequestDto) {

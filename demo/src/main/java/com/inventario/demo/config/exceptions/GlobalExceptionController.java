@@ -205,4 +205,28 @@ public class GlobalExceptionController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleInsufficientStockException(InsufficientStockException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "INSUFFICIENT_STOCK",
+                "No hay suficiente stock disponible",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        log.warn("Insufficient stock: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                "ILLEGAL_ARGUMENT",
+                "Argumento ilégal",
+                Collections.singletonList(ex.getMessage())
+        );
+
+        log.warn("Illegal argument: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
 }
