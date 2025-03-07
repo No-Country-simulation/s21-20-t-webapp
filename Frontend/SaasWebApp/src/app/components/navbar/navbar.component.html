@@ -1,5 +1,5 @@
 <nav class="bg-gray-800 text-white p-4 flex justify-between">
-  <a class="text-xl font-bold" routerLink="/">Inventario</a>
+  <a class="text-xl font-bold" routerLink="/">MagnaWeb</a>
   <div class="flex items-center">
     <ng-container *ngIf="isLoggedIn">
       
@@ -10,11 +10,6 @@
       <button (click)="logout()" class="bg-red-500 px-3 py-1 rounded">Cerrar Sesión</button>
     </ng-container>
 
-    <ng-template #authButtons>
-      <a class="px-4 bg-blue-500 px-3 py-1 rounded" routerLink="/login">Login</a>
-      <a class="px-4 bg-green-500 px-3 py-1 rounded" routerLink="/register">Register</a>
-    </ng-template>
-
-    <ng-container *ngIf="!isLoggedIn" [ngTemplateOutlet]="authButtons"></ng-container>
+    
   </div>
 </nav>
