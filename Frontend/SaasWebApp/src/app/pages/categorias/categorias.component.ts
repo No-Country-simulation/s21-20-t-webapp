@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CategoriaProducto } from '../../../Models/Models';
 import { ProductComponent } from '../productos/productos.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-category',
@@ -105,8 +106,22 @@ export class CategoryComponent implements OnInit {
   }
 
   deleteCategory(id: number): void {
-    this.categoriaService.deleteCategoriaProducto(id).subscribe(() => {
-      this.loadCategories();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.categoriaService.deleteCategoriaProducto(id).subscribe(() => {
+          this.loadCategories();
+          Swal.fire('Eliminado!', 'La categoría ha sido eliminada.', 'success');
+        });
+      }
     });
   }
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -72,12 +73,26 @@ export class RegisterComponent {
       formattedDate,
       this.roles
     ).subscribe({
-      next: () => this.router.navigate(['/login']),
+      next: () => {
+        Swal.fire({
+          title: '¡Registro Exitoso!',
+          text: 'Tu cuenta ha sido creada correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Iniciar Sesión',
+        }).then(() => {
+          this.router.navigate(['/login']);
+        });
+      },
       error: (err) => {
         console.error('Error en el registro:', err);
-        this.errorMessage = 'Error en el registro. Verifica los datos ingresados.';
+        Swal.fire({
+          title: 'Error en el Registro',
+          text: 'Verifica los datos ingresados.',
+          icon: 'error',
+          confirmButtonText: 'Aceptar',
+        });
       },
     });
-  }
+}
   
 }

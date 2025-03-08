@@ -4,6 +4,7 @@ import { AuthService } from '../../Services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Producto, ProductoActualizar } from '../../../Models/Models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-product',
@@ -90,8 +91,22 @@ export class ProductComponent implements OnInit {
   }
 
   deleteProduct(id: number): void {
-    this.productService.deleteProduct(id).subscribe(() => {
-      this.loadProducts();
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productService.deleteProduct(id).subscribe(() => {
+          this.loadProducts();
+          Swal.fire('Eliminado!', 'El producto ha sido eliminado.', 'success'); // Mensaje de éxito
+        });
+      }
     });
   }
 

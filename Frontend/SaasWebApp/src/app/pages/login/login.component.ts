@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../Services/auth.service';
 import { Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -26,12 +27,22 @@ export class LoginComponent {
       }
     );}
 
-  login() {
-    this.authService.login(this.email, this.password).subscribe({
-      next: () => this.router.navigate(['/dashboard']),
-      error: (err) => (this.errorMessage = 'Error en el inicio de sesión'),
-    });
-  }
+    login() {
+      this.authService.login(this.email, this.password).subscribe({
+        next: () => {
+          Swal.fire({
+            title: '¡Bienvenido a MagnaWeb Inventario!',
+            text: 'Has iniciado sesión correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Continuar',
+          }).then(() => {
+            this.router.navigate(['/dashboard']);
+          });
+        },
+        error: (err) => (this.errorMessage = 'Error en el inicio de sesión'),
+      });
+    }
+  
 
   register(): void {
     this.router.navigate(['/register']);

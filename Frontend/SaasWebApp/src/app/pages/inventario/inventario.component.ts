@@ -7,6 +7,7 @@ import { CategoriaService } from '../../Services/categoria.service';
 import { Producto, CategoriaProducto } from '../../../Models/Models';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-inventario',
@@ -152,16 +153,31 @@ export class InventoryComponent implements OnInit {
   }
 
   deleteInventory(id: number): void {
-    this.loading = true;
-    this.inventoryService.deleteInventory(id).subscribe({
-      next: () => {
-        this.inventories = this.inventories.filter(i => i.id !== id);
-        this.success = 'Inventario eliminado exitosamente.';
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Error al eliminar inventario: ' + err.message;
-        this.loading = false;
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esto.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.loading = true;
+        this.inventoryService.deleteInventory(id).subscribe({
+          next: () => {
+            this.inventories = this.inventories.filter(i => i.id !== id);
+            this.success = 'Inventario eliminado exitosamente.';
+            this.loading = false;
+            Swal.fire('Eliminado!', 'El inventario ha sido eliminado.', 'success'); // Mensaje de éxito
+          },
+          error: (err) => {
+            this.error = 'Error al eliminar inventario: ' + err.message;
+            this.loading = false;
+            Swal.fire('Error', 'Error al eliminar el inventario.', 'error'); // Mensaje de error
+          }
+        });
       }
     });
   }
