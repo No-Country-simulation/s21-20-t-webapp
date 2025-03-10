@@ -116,13 +116,13 @@ export class TransactionsComponent implements OnInit {
         tenantId: user.tenantId,
         productId: product.id!,
         quantity: product.stock!,
-        type: selectedType, // Aseguramos que tiene un valor válido
+        type: selectedType, 
         reference: '',
         notes: '',
         createdById: user.id,
       }));
   
-      console.log('Transacción enviada:', transactions[0]); // Depuración
+      
   
       this.transactionService.createTransaction(transactions[0]).subscribe({
         next: () => {
@@ -172,7 +172,7 @@ export class TransactionsComponent implements OnInit {
         return;
       }
   
-      console.log('Operación seleccionada:', selectedType); // Depuración
+      
   
       const transactions: Transaction[] = this.selectedProducts().map(product => ({
         tenantId: user.tenantId,
@@ -184,7 +184,7 @@ export class TransactionsComponent implements OnInit {
         createdById: user.id,
       }));
   
-      console.log('Transacción a enviar:', transactions[0]); // Depuración
+      
   
       if (!transactions[0].type) {
         console.error('Error: El campo "type" sigue siendo null antes de enviarlo.');

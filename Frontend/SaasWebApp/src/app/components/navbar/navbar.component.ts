@@ -65,11 +65,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         },
         (error) => {
           console.error('Error al obtener el Tenant:', error);
-          this.tenantName = 'Tenant no encontrado'; // Manejar el error
+          this.tenantName = 'Tenant no encontrado'; 
         }
       );
     } else {
-      this.tenantName = 'Tenant no asignado'; // Manejar el caso en que tenantId no esté presente
+      this.tenantName = 'Tenant no asignado'; 
     }
   }
 

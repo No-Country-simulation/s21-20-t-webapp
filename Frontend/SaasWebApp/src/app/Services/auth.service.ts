@@ -112,23 +112,6 @@ export class AuthService {
     return this.userProfile$.asObservable();
   }
 
-  private decodeToken(token: string): any {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
-    }
-  }
-
-  private getEmailFromToken(token: string): string | null {
-    try {
-      const decoded = JSON.parse(atob(token.split('.')[1]));
-      return decoded.email || null;
-    } catch (e) {
-      return null;
-    }
-  }
-
   getTenantById(id: number): Observable<Tenant> {
     return this.http.get<Tenant>(`${this.apiUrl}/tenant/${id}`);
   }

@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
   styleUrls: ['./productos.component.css'],
 })
 export class ProductComponent implements OnInit {
-  @Input() categoryId: number | undefined; // Recibe categoryId como entrada
+  @Input() categoryId: number | undefined; 
   products: Producto[] = [];
   newProduct: Producto = {
     tenantId: 1,

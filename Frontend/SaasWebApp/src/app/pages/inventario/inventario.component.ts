@@ -65,8 +65,8 @@ export class InventoryComponent implements OnInit {
     this.authService.getUserProfile().subscribe(
       (user) => {
         if (user && user.tenantId) {
-          this.productService.getProducts().subscribe((response) => { // Cambiado a response
-            if (response && response.content && Array.isArray(response.content)) { // Verificar si content existe y es un array
+          this.productService.getProducts().subscribe((response) => { 
+            if (response && response.content && Array.isArray(response.content)) { 
               this.productos = response.content.filter(
                 (producto) => producto.tenantId === user.tenantId
               );
