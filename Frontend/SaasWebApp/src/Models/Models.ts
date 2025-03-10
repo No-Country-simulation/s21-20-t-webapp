@@ -76,15 +76,38 @@ export interface Tenant {
     quantity?: number;
   }
   
-  export interface Transaccion {
-    id: number;
+  export interface Transaction {
+    id?: number;
     tenantId: number;
-    productoId: number;
-    cantidad: number;
-    tipo: 'entrada' | 'salida' | 'ajuste';
-    referencia?: string;
-    notas?: string;
-    creadoPor: string; // Usuario que creó la transacción
-    creadoEn?: Date;
+    productId: number;
+    quantity: number;
+    type: TransactionType;
+    reference: string;
+    notes: string;
+    createdById: number;
+    createdAt?: string;
+  }
+  
+  export enum TransactionType {
+    ENTRADA = 'ENTRADA',
+    SALIDA = 'SALIDA',
+    AJUSTE = 'AJUSTE',
+  }
+  
+  export interface TransactionFilter {
+    startDate?: string;
+    endDate?: string;
+    type?: TransactionType;
+    productId?: number;
+    reference?: string;
+  }
+  
+  export interface TransactionResponse {
+    content: Transaction[];
+    pageable: {
+      pageNumber: number;
+      pageSize: number;
+      totalElements: number;
+    };
   }
   
