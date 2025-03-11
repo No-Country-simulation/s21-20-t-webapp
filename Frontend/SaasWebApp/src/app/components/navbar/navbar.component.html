@@ -1,18 +1,15 @@
 <nav class="bg-gray-800 text-white p-4 flex justify-between">
-  <a class="text-xl font-bold px-4 mt-2" routerLink="/">MagnaWeb</a>
+  <a class="text-xl font-bold px-4 mt-2 hover:text-gray-300" routerLink="/">MagnaWeb</a>
   <div class="flex items-center">
     <ng-container *ngIf="isLoggedIn">
-      
-      <a class="px-4" routerLink="/categorias">Categorías</a>
-      <a class="px-4" routerLink="/inventario">Inventario</a>
-      <a class="px-4" routerLink="/transacciones">Transacciones</a>
-      <a class="px-4" routerLink="/dashboard">Tablero Principal</a>
-      <span class="text-2xl font-bold text-white border border-black border-gray-300 p-2 mr-2">
+      <a class="px-4 py-2 rounded hover:text-gray-300 routerLinkActive='active'" routerLink="/categorias">Categorías</a>
+      <a class="px-4 py-2 rounded hover:text-gray-300 routerLinkActive='active'" routerLink="/inventario">Inventario</a>
+      <a class="px-4 py-2 rounded hover:text-gray-300 routerLinkActive='active'" routerLink="/transacciones">Transacciones</a>
+      <a class="px-4 py-2 rounded hover:text-gray-300 routerLinkActive='active'" routerLink="/dashboard">Tablero Principal</a>
+      <span class="text-lg font-semibold text-blue-300 bg-gray-700 px-2 py-1 rounded mr-4">
         {{ tenantName }}
       </span>
-      <button (click)="logout()" class="bg-red-500 px-3 py-1 rounded">Cerrar Sesión</button>
+      <button (click)="logout()" class="bg-red-500 hover:bg-red-700 px-3 py-1 rounded">Cerrar Sesión</button>
     </ng-container>
-
-    
   </div>
 </nav>

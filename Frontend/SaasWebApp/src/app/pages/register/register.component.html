@@ -3,48 +3,57 @@
 
   <form (ngSubmit)="register()">
     <div class="mb-4">
-      <input type="text" [(ngModel)]="companyName" name="companyName" placeholder="Nombre de la empresa" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="companyName" class="block mb-2">Nombre de la empresa</label>
+      <input type="text" id="companyName" [(ngModel)]="companyName" name="companyName" placeholder="Nombre de la empresa" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="text" [(ngModel)]="name" name="name" placeholder="Nombre" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="name" class="block mb-2">Nombre</label>
+      <input type="text" id="name" [(ngModel)]="name" name="name" placeholder="Nombre" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Apellido" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="lastName" class="block mb-2">Apellido</label>
+      <input type="text" id="lastName" [(ngModel)]="lastName" name="lastName" placeholder="Apellido" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="email" [(ngModel)]="email" name="email" placeholder="Correo electrónico" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="email" class="block mb-2">Correo electrónico</label>
+      <input type="email" id="email" [(ngModel)]="email" name="email" placeholder="Correo electrónico" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="password" class="block mb-2">Contraseña</label>
+      <input type="password" id="password" [(ngModel)]="password" name="password" placeholder="Contraseña" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="tel" [(ngModel)]="phoneNumber" name="phoneNumber" placeholder="Teléfono" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="phoneNumber" class="block mb-2">Teléfono</label>
+      <input type="tel" id="phoneNumber" [(ngModel)]="phoneNumber" name="phoneNumber" placeholder="Teléfono" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="text" [(ngModel)]="country" name="country" placeholder="País" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="country" class="block mb-2">País</label>
+      <input type="text" id="country" [(ngModel)]="country" name="country" placeholder="País" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <input type="date" [(ngModel)]="birthDate" name="birthDate" placeholder="Fecha de nacimiento" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none" />
+      <label for="birthDate" class="block mb-2">Fecha de nacimiento</label>
+      <input type="date" id="birthDate" [(ngModel)]="birthDate" name="birthDate" placeholder="Fecha de nacimiento" required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none" />
     </div>
 
     <div class="mb-4">
-      <select [(ngModel)]="roles[0]" name="roles" required
-        class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-300 outline-none">
+      <label for="roles" class="block mb-2">Rol</label>
+      <select id="roles" [(ngModel)]="roles[0]" name="roles" required
+        class="form-select w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-300 focus:border-green-500 outline-none">
         <option value="user">Usuario</option>
         <option value="admin">Administrador</option>
       </select>
@@ -55,6 +64,8 @@
       Registrarse
     </button>
 
-    <p *ngIf="errorMessage" class="text-red-500 text-sm mt-2 text-center">{{ errorMessage }}</p>
+    <p *ngIf="errorMessage" class="text-red-500 text-sm mt-2 text-center font-medium">
+      {{ errorMessage }}
+    </p>
   </form>
 </div>

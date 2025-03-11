@@ -1,51 +1,51 @@
-<div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Transacciones</h2>
-  
-    <div *ngIf="!showOperationForm()">
+<div class="container mx-auto p-4 max-w-screen-lg">
+  <h2 class="text-2xl font-bold mb-4 text-gray-800">Transacciones</h2>
+
+  <div *ngIf="!showOperationForm()">
     </div>
-  
-    <div *ngIf="showOperationForm()" class="mt-4">
-      
-      <!-- Selector de Tipo de Operación -->
-      <div class="mb-4">
-        <h3 class="text-lg font-semibold mb-2">Seleccionar Tipo de Operación</h3>
-        <button (click)="selectOperation(TransactionType.ENTRADA)" class="bg-green-500 text-white px-4 py-2 rounded">
+
+  <div *ngIf="showOperationForm()" class="mt-6">
+    
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold mb-2">Seleccionar Tipo de Operación</h3>
+      <div class="flex space-x-2">
+        <button (click)="selectOperation(TransactionType.ENTRADA)" class="bg-green-500 hover:bg-green-700 text-white px-4 py-2 rounded">
           Entrada
         </button>
-        <button (click)="selectOperation(TransactionType.SALIDA)" class="bg-red-500 text-white px-4 py-2 rounded ml-2">
+        <button (click)="selectOperation(TransactionType.SALIDA)" class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded">
           Salida
         </button>
-        <button (click)="selectOperation(TransactionType.AJUSTE)" class="bg-yellow-500 text-white px-4 py-2 rounded ml-2">
+        <button (click)="selectOperation(TransactionType.AJUSTE)" class="bg-yellow-500 hover:bg-yellow-700 text-white px-4 py-2 rounded">
           Ajuste
         </button>
       </div>
-      
-  
-      <div class="mb-4">
-        <input type="text" [(ngModel)]="searchQuery" (input)="searchProducts()" placeholder="Buscar producto..." class="border rounded p-2 w-full" />
-        <ul class="mt-2">
-          <li *ngFor="let product of filteredProducts()" class="flex justify-between items-center p-2 border-b">
-            {{ product.nombre }}
-            <button (click)="addProduct(product)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Agregar</button>
-          </li>
-        </ul>
-      </div>
-  
-      <div class="mb-4">
-        <h3 class="text-lg font-semibold mb-2">Productos Seleccionados</h3>
-        <ul class="mt-2">
-          <li *ngFor="let product of selectedProducts()" class="flex justify-between items-center p-2 border-b">
-            {{ product.nombre }}
-            <input type="number" [(ngModel)]="product.stock" class="border rounded p-1 w-20" />
-            <button (click)="removeProduct(product)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
-          </li>
-        </ul>
-      </div>
-  
-      <button (click)="saveTransactions()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        {{ selectedOperation() === TransactionType.ENTRADA ? 'Cargar' : 'Enviar' }}
-      </button>
     </div>
-  
+    
+
+    <div class="mb-4">
+      <input type="text" [(ngModel)]="searchQuery" (input)="searchProducts()" placeholder="Buscar producto..." class="border rounded p-2 w-full focus:ring-2 focus:ring-blue-500" />
+      <ul class="mt-2 border rounded">
+        <li *ngFor="let product of filteredProducts()" class="flex justify-between items-center p-2 border-b hover:bg-gray-100">
+          {{ product.nombre }}
+          <button (click)="addProduct(product)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded">Agregar</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-lg font-semibold mb-2">Productos Seleccionados</h3>
+      <ul class="mt-2 border rounded">
+        <li *ngFor="let product of selectedProducts()" class="flex justify-between items-center p-2 border-b hover:bg-gray-100">
+          {{ product.nombre }}
+          <input type="number" [(ngModel)]="product.stock" class="border rounded p-1 w-20 focus:ring-2 focus:ring-blue-500" />
+          <button (click)="removeProduct(product)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
+        </li>
+      </ul>
+    </div>
+
+    <button (click)="saveTransactions()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-6">
+      {{ selectedOperation() === TransactionType.ENTRADA ? 'Cargar' : 'Enviar' }}
+    </button>
   </div>
-  
+
+</div>
