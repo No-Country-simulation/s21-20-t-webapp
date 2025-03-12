@@ -5,6 +5,7 @@ import { AuthService } from '../../Services/auth.service';
 import { Transaction, TransactionType, Producto, Inventory } from '../../../Models/Models';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-transactions',
@@ -45,7 +46,8 @@ export class TransactionsComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private productService: ProductService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     effect(() => {
       this.authService.getUserProfile().subscribe(user => {
@@ -105,7 +107,7 @@ export class TransactionsComponent implements OnInit {
   saveTransaction(): void {
     this.authService.getUserProfile().subscribe(user => {
       const selectedType = this.selectedOperation();
-      console.log('Operación seleccionada:', selectedType); // Depuración
+      
   
       if (!selectedType) {
         console.error('Debe seleccionar un tipo de operación');
@@ -129,6 +131,7 @@ export class TransactionsComponent implements OnInit {
           this.selectedProducts.set([]);
           this.showOperationForm.set(false);
           this.loadTransactions(user.tenantId);
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           console.error('Error creando transacción:', error);
@@ -196,6 +199,7 @@ export class TransactionsComponent implements OnInit {
           this.selectedProducts.set([]);
           this.showOperationForm.set(false);
           this.loadTransactions(user.tenantId);
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           console.error('Error creando transacción:', error);

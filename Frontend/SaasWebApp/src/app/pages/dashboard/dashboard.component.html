@@ -20,7 +20,7 @@
             <th class="p-3 border text-left w-40 text-gray-600 font-bold">Nombre</th>
             <th class="p-3 border text-left w-24 text-gray-600 font-bold">SKU</th>
             <th class="p-3 border text-left w-24 text-gray-600 font-bold">Cantidad</th>
-            <th class="p-3 border text-left w-48 text-gray-600 font-bold">Acciones</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -33,15 +33,7 @@
                 <input type="number" [(ngModel)]="editedStock" class="border p-1 mr-2 w-20" />
               </span>
             </td>
-            <td class="p-3 border w-48">
-              <span *ngIf="editingProductId !== product.id">
-                <button (click)="editStock(product.id!, product.stock!)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Editar Stock</button>
-              </span>
-              <span *ngIf="editingProductId === product.id">
-                <button (click)="saveStock(product)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Guardar</button>
-                <button (click)="cancelEdit()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded ml-2">Cancelar</button>
-              </span>
-            </td>
+            
           </tr>
         </tbody>
       </table>

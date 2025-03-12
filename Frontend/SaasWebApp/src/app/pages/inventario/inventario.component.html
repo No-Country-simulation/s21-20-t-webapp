@@ -6,51 +6,42 @@
   <div *ngIf="success" class="text-green-500 mb-4">{{ success }}</div>
 
   <div *ngIf="!loading">
-      <div class="mb-4">
-          <h3 class="text-lg font-semibold mb-2">Crear Inventario</h3>
-          <div class="mb-2">
-              <label for="productId" class="block text-sm font-medium text-gray-700">Producto:</label>
-              <select id="productId" [(ngModel)]="newInventory.productId" class="border p-2 w-full">
-                  <option *ngFor="let producto of productos" [value]="producto.id">{{ producto.nombre }}</option>
-              </select>
-          </div>
-          <div class="mb-2">
-              <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad:</label>
-              <input type="number" id="quantity" placeholder="Ingrese la cantidad" [(ngModel)]="newInventory.quantity" class="border p-2 w-full" />
-          </div>
-          <div class="mb-2">
-              <label for="location" class="block text-sm font-medium text-gray-700">Ubicación:</label>
-              <input type="text" id="location" placeholder="Ingrese la ubicación" [(ngModel)]="newInventory.location" class="border p-2 w-full" />
-          </div>
-          <button (click)="createInventory()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Crear
-          </button>
-      </div>
-
-      <div class="mb-4">
-          <h3 class="text-lg font-semibold mb-2">Buscar Inventarios</h3>
-          <div class="mb-2">
-              <label for="searchLocation" class="block text-sm font-medium text-gray-700">Ubicación:</label>
-              <input type="text" id="searchLocation" placeholder="Ingrese la ubicación de búsqueda" [(ngModel)]="searchParams.location" class="border p-2 w-full" />
-          </div>
-          <!-- <div class="mb-2">
-              <label for="startDate" class="block text-sm font-medium text-gray-700">Fecha de Inicio:</label>
-              <input type="date" id="startDate" [(ngModel)]="searchParams.startDate" class="border p-2 w-full" />
-          </div>
-          <div class="mb-2">
-              <label for="endDate" class="block text-sm font-medium text-gray-700">Fecha de Fin:</label>
-              <input type="date" id="endDate" [(ngModel)]="searchParams.endDate" class="border p-2 w-full" />
-          </div> -->
-          <button (click)="searchInventories()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-              Buscar
-          </button>
-          <!-- <button (click)="getInventoriesByDateRange()" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
-              Buscar por Rango de Fechas
-          </button> -->
-      </div>
+    <div class="w-full border-collapse flex mb-4"> 
+        <div class="w-1/2 pr-4"> 
+            <h3 class="text-lg font-semibold mb-2">Crear Inventario</h3>
+            <div class="mb-2">
+                <label for="productId" class="block text-sm font-medium text-gray-700">Producto:</label>
+                <select id="productId" [(ngModel)]="newInventory.productId" class="border p-2 w-full">
+                    <option *ngFor="let producto of productos" [value]="producto.id">{{ producto.nombre }}</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label for="quantity" class="block text-sm font-medium text-gray-700">Cantidad:</label>
+                <input type="number" id="quantity" placeholder="Ingrese la cantidad" [(ngModel)]="newInventory.quantity" class="border p-2 w-full" />
+            </div>
+            <div class="mb-2">
+                <label for="location" class="block text-sm font-medium text-gray-700">Ubicación:</label>
+                <input type="text" id="location" placeholder="Ingrese la ubicación" [(ngModel)]="newInventory.location" class="border p-2 w-full" />
+            </div>
+            <button (click)="createInventory()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Crear
+            </button>
+        </div>
+    
+        <div class="w-1/2 pl-4"> 
+            <h3 class="text-lg font-semibold mb-2">Buscar Inventarios</h3>
+            <div class="mb-2">
+                <label for="searchLocation" class="block text-sm font-medium text-gray-700">Ubicación:</label>
+                <input type="text" id="searchLocation" placeholder="Ingrese la ubicación de búsqueda" [(ngModel)]="searchParams.location" class="border p-2 w-full" />
+            </div>
+            <button (click)="searchInventories()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                Buscar
+            </button>
+        </div>
+    </div>
 
       <div>
-          <h3 class="text-lg font-semibold mb-2">Lista de Inventarios</h3>
+          <h3 class="text-2xl font-bold mb-4">Lista de Inventarios</h3>
           <table class="w-full border-collapse">
               <thead>
                   <tr>
@@ -80,8 +71,8 @@
                           <input *ngIf="isEditing && selectedInventory && selectedInventory.location === inventory.location" type="text" [(ngModel)]="selectedInventory.location" class="border p-1" />
                       </td>
                       <td class="border p-2">
-                          <button *ngIf="!isEditing || !selectedInventory || selectedInventory.id !== inventory.id" (click)="selectInventory(inventory)" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded mr-2">Editar</button>
-                          <button *ngIf="!isEditing || !selectedInventory || selectedInventory.id !== inventory.id" (click)="deleteInventory(inventory.id)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2">Eliminar</button>
+                          <button *ngIf="!isEditing || !selectedInventory || selectedInventory.id !== inventory.id" (click)="selectInventory(inventory)" class="boton">Editar</button>
+                          <button *ngIf="!isEditing || !selectedInventory || selectedInventory.id !== inventory.id" (click)="deleteInventory(inventory.id)" class="boton">Eliminar</button>
                           <button *ngIf="isEditing && selectedInventory && selectedInventory.id === inventory.id" (click)="updateInventory()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2">Guardar</button>
                           <button *ngIf="isEditing && selectedInventory && selectedInventory.id === inventory.id" (click)="cancelEdit()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded">Cancelar</button>
                       </td>

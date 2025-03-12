@@ -17,34 +17,68 @@ export class LoginComponent {
   isLoggedIn = false;
   email = '';
   password = '';
-  errorMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
+
   ngOnInit() {
     this.loginSubscription = this.authService.getLoginStatus().subscribe(
       (isLoggedIn) => {
         this.isLoggedIn = isLoggedIn;
       }
-    );}
+    );
+  }
 
-    login() {
-      this.authService.login(this.email, this.password).subscribe({
-        next: () => {
-          Swal.fire({
-            title: '¡Bienvenido a MagnaWeb Inventario!',
-            text: 'Has iniciado sesión correctamente.',
-            icon: 'success',
-            confirmButtonText: 'Continuar',
-          }).then(() => {
-            this.router.navigate(['/dashboard']);
-          });
-        },
-        error: (err) => (this.errorMessage = 'Error en el inicio de sesión'),
-      });
+  login() {
+    // Validaciones
+    if (!this.email) {
+      this.showError('El correo electrónico es obligatorio.');
+      return;
     }
-  
+    if (!this.isValidEmail(this.email)) {
+      this.showError('El correo electrónico no es válido.');
+      return;
+    }
+    if (!this.password) {
+      this.showError('La contraseña es obligatoria.');
+      return;
+    }
+
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        Swal.fire({
+          title: '¡Bienvenido a MagnaWeb Inventario!',
+          text: 'Has iniciado sesión correctamente.',
+          icon: 'success',
+          confirmButtonText: 'Continuar',
+        }).then(() => {
+          this.router.navigate(['/dashboard']);
+        });
+      },
+      error: (err) => {
+        console.error('Error en el inicio de sesión:', err);
+        this.showError('Error en el inicio de sesión. Verifica tus credenciales.');
+      },
+    });
+  }
 
   register(): void {
     this.router.navigate(['/register']);
+  }
+
+  // Función para mostrar errores con SweetAlert2
+  private showError(message: string) {
+    Swal.fire({
+      title: 'Error',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
+  }
+
+  // Función para validar formato de correo electrónico
+  private isValidEmail(email: string): boolean {
+    // Expresión regular para validar el formato del correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 }

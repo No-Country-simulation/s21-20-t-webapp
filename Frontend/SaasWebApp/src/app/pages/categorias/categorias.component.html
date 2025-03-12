@@ -17,7 +17,6 @@
         <tr>
           <th class="border p-2 bg-gray-200 text-gray-600 font-bold">ID</th>
           <th class="border p-2 bg-gray-200 text-gray-600 font-bold">Nombre</th>
-          <th class="border p-2 bg-gray-200 text-gray-600 font-bold">SKU</th>
           <th class="border p-2 bg-gray-200 text-gray-600 font-bold">Acciones</th>
         </tr>
       </thead>
@@ -25,13 +24,12 @@
         <tr *ngFor="let category of categories" class="border-b border-gray-200">
           <td class="border p-2">{{ category.id }}</td>
           <td class="border p-2">{{ category.nombre }}</td>
-          <td class="border p-2">{{ category.sku }}</td>
           <td class="border p-2">
             <div class="inline-flex space-x-2">
-              <button (click)="selectCategory(category)" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded">Editar</button>
-              <button (click)="deleteCategory(category.id!)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">Eliminar</button>
-              <button (click)="showProducts(category)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Agregar Productos</button>
-              <button (click)="showProducts(category)" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">ver Productos</button>
+              <button (click)="selectCategory(category)" class="boton">Editar</button>
+              <button (click)="deleteCategory(category.id!)" class="boton">Eliminar</button>
+              <button (click)="showProducts(category)" class="boton">Agregar Productos</button>
+              
             </div>
           </td>
         </tr>

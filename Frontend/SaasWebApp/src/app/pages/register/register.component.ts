@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
-  companyName = ''; // Nuevo campo para el nombre de la empresa
+  companyName = '';
   name = '';
   lastName = '';
   email = '';
@@ -20,26 +20,58 @@ export class RegisterComponent {
   phoneNumber: number | null = null;
   country = '';
   birthDate = '';
-  roles: string[] = ['user']; // Rol por defecto
+  roles: string[]= ['user']; 
   errorMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
   register() {
-    if (!this.companyName || !this.name || !this.lastName || !this.email || !this.password || !this.phoneNumber || !this.country || !this.birthDate) {
-      this.errorMessage = 'Todos los campos son obligatorios';
+    this.errorMessage = ''; // Limpiar mensaje de error
+
+    // Validaciones
+    if (!this.companyName) {
+      this.showError('El nombre de la empresa es obligatorio.');
       return;
     }
-  
-    const phone = Number(this.phoneNumber);
-    if (isNaN(phone)) {
-      this.errorMessage = 'El teléfono debe ser un número válido';
+    if (!this.name) {
+      this.showError('El nombre es obligatorio.');
       return;
     }
-  
-    const date = new Date(this.birthDate);
-    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-  
+    if (!this.lastName) {
+      this.showError('El apellido es obligatorio.');
+      return;
+    }
+    if (!this.email) {
+      this.showError('El correo electrónico es obligatorio.');
+      return;
+    }
+    if (!this.isValidEmail(this.email)) {
+      this.showError('El correo electrónico no es válido.');
+      return;
+    }
+    if (!this.password) {
+      this.showError('La contraseña es obligatoria.');
+      return;
+    }
+    if (!this.phoneNumber) {
+      this.showError('El teléfono es obligatorio.');
+      return;
+    }
+    if (isNaN(this.phoneNumber)) {
+      this.showError('El teléfono debe ser un número válido.');
+      return;
+    }
+    if (!this.country) {
+      this.showError('El país es obligatorio.');
+      return;
+    }
+    if (!this.birthDate) {
+      this.showError('La fecha de nacimiento es obligatoria.');
+      return;
+    }
+
+    const formattedDate = this.formatDate(this.birthDate); // Formatear fecha
+
     const requestData = {
       tenant: {
         name: this.companyName,
@@ -53,7 +85,7 @@ export class RegisterComponent {
         lastName: this.lastName,
         email: this.email,
         password: this.password,
-        phoneNumber: phone,
+        phoneNumber: this.phoneNumber,
         country: this.country,
         birthDate: formattedDate,
         roleDto: {
@@ -61,7 +93,7 @@ export class RegisterComponent {
         }
       }
     };
-  
+
     this.authService.register(
       this.companyName,
       this.name,
@@ -85,14 +117,31 @@ export class RegisterComponent {
       },
       error: (err) => {
         console.error('Error en el registro:', err);
-        Swal.fire({
-          title: 'Error en el Registro',
-          text: 'Verifica los datos ingresados.',
-          icon: 'error',
-          confirmButtonText: 'Aceptar',
-        });
+        this.showError('Error en el registro. Verifica los datos ingresados.');
       },
     });
-}
-  
+  }
+
+  // Función para mostrar errores con SweetAlert2
+  private showError(message: string) {
+    Swal.fire({
+      title: 'Error',
+      text: message,
+      icon: 'error',
+      confirmButtonText: 'Aceptar'
+    });
+  }
+
+  // Función para validar formato de correo electrónico
+  private isValidEmail(email: string): boolean {
+    // Expresión regular para validar el formato del correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  // Función para formatear la fecha
+  private formatDate(date: string): string {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d.getDate().toString().padStart(2, '0')}`;
+  }
 }
