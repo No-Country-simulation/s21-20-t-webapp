@@ -6,6 +6,7 @@ Plataforma digital para la gestión eficiente de inventarios, diseñada para sim
 
 - [Características](#características)
 - [Tecnologías](#tecnologías)
+- [Diagrama](#diagrama)
 - [Contribución](#contribución)
 - [Feedback](#feedback)
 - [Futuras mejoras](#futuras-mejoras)
@@ -49,6 +50,10 @@ El MagnaWeb es una aplicación diseñada para facilitar la gestión de inventari
   - Spring Boot
   - Java
   - PostgreSQL
+ 
+## Diagrama
+
+![Saas (1)](https://github.com/user-attachments/assets/a8fbc543-e118-496b-9dc6-68a0527e8419)
 
 ## Contribución
 
