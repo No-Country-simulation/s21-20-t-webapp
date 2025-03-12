@@ -78,7 +78,7 @@ export class DashboardComponent implements OnInit {
             next: (data) => {
                 if (data && data.content && Array.isArray(data.content)) {
                     this.products = data.content.filter((product) => product.tenantId === tenantId);
-                    this.getInventoryForProducts(tenantId); // Obtén el inventario para los productos
+                    this.getInventoryForProducts(tenantId); 
                 } else {
                     console.error('La respuesta del backend no contiene un array de productos válido');
                     this.error = 'Error al cargar los productos.';
