@@ -78,7 +78,7 @@ export class TransactionsComponent implements OnInit {
   loadProducts(tenantId: number): void {
     this.productService.getProducts().subscribe({
       next: (products) => {
-        this.products.set(products.content.filter(product => product.tenantId === tenantId));
+        this.products.set((Array.isArray(products.content) ? products.content : []).filter((product: Producto) => product.tenantId === tenantId));
       },
       error: (error) => {
         console.error('Error cargando productos:', error);

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CategoriaProducto } from '../../Models/Models';
 
@@ -11,13 +11,19 @@ export class CategoriaService {
 
   constructor(private http: HttpClient) {}
 
-  getCategories(): Observable<{ content: CategoriaProducto[]; totalPages: number; totalElements: number }> {
+  getCategories(page: number = 0, size: number = 10): Observable<{ content: CategoriaProducto[]; totalPages: number; totalElements: number }> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
     });
-    return this.http.get<{ content: CategoriaProducto[]; totalPages: number; totalElements: number }>(this.apiUrl, { headers });
-  }
+
+    let params = new HttpParams()
+        .set('page', page.toString())
+        .set('size', size.toString());
+
+    return this.http.get<{ content: CategoriaProducto[]; totalPages: number; totalElements: number }>(this.apiUrl, { headers: headers, params: params });
+}
+
 
   getCategoriaProductoById(id: number): Observable<CategoriaProducto> {
     const token = localStorage.getItem('token');

@@ -8,60 +8,70 @@ import { ProductComponent } from '../productos/productos.component';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-category',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ProductComponent],
-  templateUrl: './categorias.component.html',
-  styleUrls: ['./categorias.component.css'],
+    selector: 'app-category',
+    standalone: true,
+    imports: [CommonModule, FormsModule, ProductComponent],
+    templateUrl: './categorias.component.html',
+    styleUrls: ['./categorias.component.css'],
 })
 export class CategoryComponent implements OnInit {
-  categories: CategoriaProducto[] = [];
-  newCategory: CategoriaProducto = {
-    tenantId: 0,
-    categoriaId: 0,
-    nombre: '',
-    sku: '',
-    camposPersonalizados: {},
-  };
-  selectedCategory: CategoriaProducto | null = null;
-  isEditing = false;
-  showProductComponent = false;
-  selectedCategoryForProducts: CategoriaProducto | null = null;
-  editingCategory: CategoriaProducto | null = null;
+    categories: CategoriaProducto[] = [];
+    newCategory: CategoriaProducto = {
+        tenantId: 0,
+        categoriaId: 0,
+        nombre: '',
+        sku: '',
+        camposPersonalizados: {},
+    };
+    selectedCategory: CategoriaProducto | null = null;
+    isEditing = false;
+    showProductComponent = false;
+    selectedCategoryForProducts: CategoriaProducto | null = null;
+    editingCategory: CategoriaProducto | null = null;
 
-  constructor(
-    private categoriaService: CategoriaService,
-    private authService: AuthService
-  ) {}
+    // Propiedades para la paginación
+    currentPage: number = 0;
+    pageSize: number = 5; // Ajusta el tamaño de página según tus necesidades
+    totalPages: number = 0; // Para almacenar el total de páginas
 
-  ngOnInit(): void {
-    this.loadCategories();
-  }
+    constructor(
+        private categoriaService: CategoriaService,
+        private authService: AuthService
+    ) { }
 
-  
+    ngOnInit(): void {
+        this.currentPage = 0;
+        this.loadCategories();
+    }
 
-  loadCategories(): void {
-    this.authService.getUserProfile().subscribe(
-      (user) => {
-        if (user && user.tenantId) {
-          this.categoriaService.getCategories().subscribe((response) => { // Cambiado a response
-            if (response && response.content && Array.isArray(response.content)) { // Verificar si content existe y es un array
-              this.categories = response.content.filter(
-                (category) => category.tenantId === user.tenantId
-              );
-            } else {
-              console.error('La respuesta del backend no contiene un array de categorías válido');
+    loadCategories(): void {
+        this.authService.getUserProfile().subscribe({
+            next: (user) => {
+                if (user && user.tenantId) {
+                    this.categoriaService.getCategories(this.currentPage, this.pageSize).subscribe({ // Pasa currentPage y pageSize
+                        next: (response) => {
+                            if (response && response.content && Array.isArray(response.content)) {
+                                this.categories = response.content.filter(
+                                    (category) => category.tenantId === user.tenantId
+                                );
+                                this.totalPages = response.totalPages; // Almacena el total de páginas
+                            } else {
+                                console.error('La respuesta del backend no contiene un array de categorías válido');
+                            }
+                        },
+                        error: (error) => {
+                            console.error('Error obteniendo categorías:', error);
+                        }
+                    });
+                } else {
+                    console.error('tenantId no encontrado en el perfil del usuario');
+                }
+            },
+            error: (error) => {
+                console.error('Error obteniendo perfil del usuario:', error);
             }
-          });
-        } else {
-          console.error('tenantId no encontrado en el perfil del usuario');
-        }
-      },
-      (error) => {
-        console.error('Error obteniendo perfil del usuario:', error);
-      }
-    );
-  }
+        });
+    }
 
 
   createCategory(): void {
@@ -134,6 +144,37 @@ export class CategoryComponent implements OnInit {
     this.selectedCategoryForProducts = category;
     this.showProductComponent = true;
   }
+
+  // Métodos para la paginación
+  goToPreviousPage(): void {
+    if (this.currentPage > 0) {
+        this.currentPage--;
+        this.loadCategories();
+    }
+}
+
+goToNextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+        this.currentPage++;
+        this.loadCategories();
+    }
+}
+
+goToPage(pageNumber: number): void {
+  console.log('Intentando ir a la página:', pageNumber);
+    if (pageNumber >= 0 && pageNumber < this.totalPages) {
+        this.currentPage = pageNumber;
+        this.loadCategories();
+    }
+}
+
+getPagesArray(): number[] {
+    const pagesArray = [];
+    for (let i = 0; i < this.totalPages; i++) {
+        pagesArray.push(i);
+    }
+    return pagesArray;
+}
 
   
 }
