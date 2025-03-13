@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - dev_backend
+      - dev_Backend
       - dev_anthony
   pull_request:
     branches:
       - dev_backend
+      - dev_Backend
       - dev_anthony
 
 jobs:
